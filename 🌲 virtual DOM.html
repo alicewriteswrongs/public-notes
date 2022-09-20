@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="generator" content="pandoc" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
-  <title>📝 virtual DOM</title>
+  <title>🌲 virtual DOM</title>
   <style>
     html {
       line-height: 1.5;
@@ -227,10 +227,12 @@
 </head>
 <body>
 <header id="title-block-header">
-<h1 class="title">📝 virtual DOM</h1>
+<h1 class="title">🌲 virtual DOM</h1>
 </header>
 <nav id="TOC" role="doc-toc">
 <ul>
+<li><a href="#reconciliation"
+id="toc-reconciliation">Reconciliation</a></li>
 <li><a href="#react" id="toc-react">React</a></li>
 <li><a href="#resources-for-learning"
 id="toc-resources-for-learning">resources for learning</a></li>
@@ -240,10 +242,22 @@ id="toc-simple-virtual-dom">simple-virtual-dom</a></li>
 <li><a href="#million" id="toc-million">million</a></li>
 </ul>
 </nav>
+<p>A Virtual DOM is a paradigm for building interactive user interfaces
+in the browser. At its most basic level, this involves maintaining</p>
+<p>Basic terminology:</p>
+<p>Typically virtual DOM implementations have a few main pieces / bits
+which aim to solve the same underlying problems:</p>
+<h3 id="reconciliation">Reconciliation</h3>
+<p><em>Main article: <a href="./🕊%20VDom%20Reconciliation.html">🕊 VDom
+Reconciliation</a></em></p>
+<p>The old and new virtual DOM trees are diffed and any updates are
+written to the DOM. There are quite a lot of gotchas here, from how to
+tell when old DOM elements should be preserved to how to minimize
+re-renders to how to</p>
 <h2 id="react">React</h2>
-<p>See also <a href="./📝%20Reconciliation%20in%20React.html">📝
-Reconciliation in React</a>, which has notes about React’s
-reconciliation algorithm.</p>
+<p>See also <a href="./🕊%20VDom%20Reconciliation.html">🕊 VDom
+Reconciliation</a>, which has notes about React’s reconciliation
+algorithm.</p>
 <h2 id="resources-for-learning">resources for learning</h2>
 <ul>
 <li><a
@@ -254,6 +268,7 @@ class="uri">https://dev.to/ycmjason/building-a-simple-virtual-dom-from-scratch-3
 little more complicated (I added state management): <a
 href="https://github.com/alicewriteswrongs/little-vdom"
 class="uri">https://github.com/alicewriteswrongs/little-vdom</a></p>
+<p><a href="./💯%20hundred%20VDom.html">💯 hundred VDom</a></p>
 <h2 id="hundred">hundred</h2>
 <p>Here: <a href="https://github.com/aidenybai/hundred"
 class="uri">https://github.com/aidenybai/hundred</a></p>
