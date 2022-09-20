@@ -221,24 +221,6 @@
     code span.vs { color: #4070a0; } /* VerbatimString */
     code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
   </style>
-  <script defer=""
-  src="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.js"></script>
-  <script>document.addEventListener("DOMContentLoaded", function () {
- var mathElements = document.getElementsByClassName("math");
- var macros = [];
- for (var i = 0; i < mathElements.length; i++) {
-  var texText = mathElements[i].firstChild;
-  if (mathElements[i].tagName == "SPAN") {
-   katex.render(texText.data, mathElements[i], {
-    displayMode: mathElements[i].classList.contains('display'),
-    throwOnError: false,
-    macros: macros,
-    fleqn: false
-   });
-}}});
-  </script>
-  <link rel="stylesheet"
-  href="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.css" />
   <!--[if lt IE 9]>
     <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
   <![endif]-->
@@ -249,11 +231,7 @@
 </header>
 <nav id="TOC" role="doc-toc">
 <ul>
-<li><a href="#react" id="toc-react">React</a>
-<ul>
-<li><a href="#reconciliation"
-id="toc-reconciliation">Reconciliation</a></li>
-</ul></li>
+<li><a href="#react" id="toc-react">React</a></li>
 <li><a href="#resources-for-learning"
 id="toc-resources-for-learning">resources for learning</a></li>
 <li><a href="#hundred" id="toc-hundred">hundred</a></li>
@@ -264,33 +242,8 @@ id="toc-simple-virtual-dom">simple-virtual-dom</a></li>
 </nav>
 <h2 id="react">React</h2>
 <p>See also <a href="./📝%20Reconciliation%20in%20React.html">📝
-Reconciliation in React</a></p>
-<h3 id="reconciliation">Reconciliation</h3>
-<p>The React devs have published a few technical articles details of how
-React works, including <a
-href="https://reactjs.org/docs/reconciliation.html%20article%20from">one
-about reconciliation</a>, i.e. syncing the concrete DOM with the virtual
-DOM.</p>
-<p>An interesting thing noted in here is that for the sake of real-world
-performance it’s <em>basically</em> required to use some sort of
-heuristic for comparing old and new trees, they note that the best-case
-algorithms for doing this exhaustively have a complexity on the order of
-<span class="math inline">O(n^3)</span><a href="#fn1"
-class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>
-which is terrifically slow for any significant number of entries. On the
-search UI I worked on at MIT, for instance, we easily had a few thousand
-UI elements on the page: the card for each search result had maybe 15 or
-20 elements, we could easily have up to a few hundred cards, there were
-filters, filter options, etc, as well as general stuff around all that
-like the navbar at the top. So if we had, say, <span
-class="math inline">1000</span> elements on the page then we’d have to
-do <span class="math inline">1000^3 = 1,000,000,000</span> comparison
-checks if we had a fully correct algorithm. Far too big!</p>
-<p>This implies that the Stencil VDom implementation’s usage of
-heuristics for things like detecting when children match up is
-well-justified. However, we should try to make sure that our heuristics
-always result in good output! The <code>ref</code> issue showcases how
-we do have a shortcoming there.</p>
+Reconciliation in React</a>, which has notes about React’s
+reconciliation algorithm.</p>
 <h2 id="resources-for-learning">resources for learning</h2>
 <ul>
 <li><a
@@ -417,20 +370,5 @@ href="https://github.com/aidenybai/million"
 class="uri">https://github.com/aidenybai/million</a></p>
 <p>a good bit more complicated, and it looks like it’s somewhat written
 to support the usecase of providing a react-compatible DX</p>
-<section id="footnotes" class="footnotes footnotes-end-of-document"
-role="doc-endnotes">
-<hr />
-<ol>
-<li id="fn1"><p>They cite the following paper for this: <a
-href="https://grfia.dlsi.ua.es/ml/algorithms/references/editsurvey_bille.pdf"
-class="uri">https://grfia.dlsi.ua.es/ml/algorithms/references/editsurvey_bille.pdf</a>.
-This discusses the problem of, given two trees <span
-class="math inline">T_1</span> and <span class="math inline">T_2</span>,
-finding the minimal edit script <span class="math inline">S</span> which
-which will produce <span class="math inline">T_2</span> from <span
-class="math inline">T_1</span>. <a href="#fnref1" class="footnote-back"
-role="doc-backlink">↩︎</a></p></li>
-</ol>
-</section>
 </body>
 </html>
