@@ -186,6 +186,9 @@
 </header>
 <nav id="TOC" role="doc-toc">
 <ul>
+<li><a href="#general-statement-of-the-problem"
+id="toc-general-statement-of-the-problem">General statement of the
+problem</a></li>
 <li><a href="#react" id="toc-react">React</a>
 <ul>
 <li><a href="#diffing-algorithm" id="toc-diffing-algorithm">Diffing
@@ -193,38 +196,97 @@ algorithm</a></li>
 </ul></li>
 <li><a href="#snabbdom" id="toc-snabbdom">Snabbdom</a></li>
 <li><a href="#millions" id="toc-millions">Millions</a></li>
+<li><a href="#preact" id="toc-preact">Preact</a></li>
 </ul>
 </nav>
 <p><em>Reconciliation</em> is a fundamental part of any virtual DOM
 implementation and as far as I can tell is where most of the complexity
 and the potential pitfalls and bugs lie. Therefore, it’s helpful to look
-at how it is handled in various projects.</p>
+at how it is handled in various projects, as well as to get a handle on
+the general nature of the problem.</p>
+<h2 id="general-statement-of-the-problem">General statement of the
+problem</h2>
+<p>Given a tree of virtual DOM nodes it is fairly straightforward to
+produce a corresponding DOM tree, especially if we’re dealing with the
+“simple case” of virtual DOM where there are no <a
+href="./🔧%20VDom%20components.html">🔧 VDom components</a>. We can
+start with the root node, create a DOM node which corresponds to it, and
+then recur down the tree through the children, adding new children to
+the DOM nodes we’ve already created to match our virtual DOM tree
+structure. This is the easy case and is basically what we do on the
+first render.</p>
+<p>Immediately after that (i.e. at the <em>second</em> render) we’re
+confronted with a different problem: how do we figure out what we need
+to update, and how do we keep our updates performant? We’ll be passed a
+new virtual DOM tree (we don’t worry now about where that comes from or
+how its calculated) and we need to make changes to the DOM to reflect
+that new tree so that the user sees the right view.</p>
+<p>The simplest possible answer would be to re-render the whole tree,
+creating an entirely new DOM tree based purely on the new virtual DOM
+tree which we could then just swap in for the current DOM tree. This
+would work and possibly be fine for very low interactivity applications
+with small numbers of DOM nodes, but even though computers are fast this
+would run into some obvious performance issues very quickly.</p>
+<p>So instead what we have to do is figure out a performant way to
+update the existing DOM tree in-place in order to create a DOM state
+that matches the new virtual DOM tree.</p>
+<p>To put it a bit more formally, let <span class="math inline">V</span>
+be the set of all virtual DOM trees (aka the virtual DOM treespace) and
+let <span class="math inline">v_{cur}, v_{next} \in V</span> be our old
+and new virtual DOM trees (current and next). Then let <span
+class="math inline">D</span> be the set of all actual (or concrete, I
+sort of prefer that terminology) DOM trees, and let <span
+class="math inline">d_{cur} \in D</span> be the current state of a DOM
+tree which we assume accurately reflects <span
+class="math inline">v_{cur}</span>. There is then some tree <span
+class="math inline">d_{next} \in D</span> which is a (currently
+hypothetical) DOM tree which matches up with <span
+class="math inline">v_{next}</span>, or, put another way, if we have
+some function <span class="math inline">render: V \to D</span> which
+maps from the virtual DOM treespace <span class="math inline">V</span>
+to the concrete DOM treespace <span class="math inline">D</span> then we
+assume <span class="math inline">render(v_{cur}) = d_{cur}</span> and
+<span class="math inline">render(v_{next}) = d_{next}</span>. The
+problem we’re confronted with then is, more or less, that we assume
+<span class="math inline">render</span> to be expensive, and therefore
+simply swapping out <span class="math inline">render(v_{next})</span>
+for our current tree is impractical.</p>
+<p>So then we’ve got to figure out, based on comparing <span
+class="math inline">v_{cur}</span> and <span
+class="math inline">v_{next}</span>, how to carry out some sequence of
+transformations <span class="math inline">S</span> on <span
+class="math inline">d_{cur}</span> which will transform it into <span
+class="math inline">d_{next}</span>. This is the core of the problem
+because, to restate, we could always just use <span
+class="math inline">render(v_{next})</span> but we’d like to avoid that
+because we assume that, in practice, it will get expensive. It turns out
+that computing the edit script <span class="math inline">S</span> is
+something which can be done exhaustively: there are published algorithms
+which will find a script which minimizes the <em>edit distance</em>
+between two trees<a href="#fn1" class="footnote-ref" id="fnref1"
+role="doc-noteref"><sup>1</sup></a>. In a perfect world we’d just use
+one of those and be off to the races! But unfortunately we won’t get
+away with things that easily. It turns out that until recently the
+published algorithms for finding the minimal edit script between two
+trees ran in cubic time (<span class="math inline">O(n^3)</span>)<a
+href="#fn2" class="footnote-ref" id="fnref2"
+role="doc-noteref"><sup>2</sup></a>, which means that for a reasonably
+large but not huge number of nodes in a tree (say 1000) we’d be looking
+at performing something like a billion comparison operations in order to
+find the minimal edit script. Not acceptable!</p>
+<p>Thus in the real world we need to use some sort of heuristic in order
+to transform <span class="math inline">d_{cur}</span> into <span
+class="math inline">d_{next}</span>.<a href="#fn3" class="footnote-ref"
+id="fnref3" role="doc-noteref"><sup>3</sup></a> Different virtual DOM
+implementations use different heuristics for this, I’m going to review
+them here, describe the current heuristic used in Stencil, and try to
+produce some useful comparison / summary of tradeoffs between them.</p>
 <h2 id="react">React</h2>
 <p>The React devs have published a few technical articles details of how
 React works, including <a
 href="https://reactjs.org/docs/reconciliation.html%20article%20from">one
 about reconciliation</a>, i.e. syncing the concrete DOM with the virtual
 DOM.</p>
-<p>An interesting thing noted in here is that for the sake of real-world
-performance it’s <em>basically</em> required to use some sort of
-heuristic for comparing old and new trees, they note that the best-case
-algorithms for doing this exhaustively have a complexity on the order of
-<span class="math inline">O(n^3)</span><a href="#fn1"
-class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>
-which is terrifically slow for any significant number of entries. On the
-search UI I worked on at MIT, for instance, we easily had a few thousand
-UI elements on the page: the card for each search result had maybe 15 or
-20 elements, we could easily have up to a few hundred cards, there were
-filters, filter options, etc, as well as general stuff around all that
-like the navbar at the top. So if we had, say, <span
-class="math inline">1000</span> elements on the page then we’d have to
-do <span class="math inline">1000^3 = 1,000,000,000</span> comparison
-checks if we had a fully correct algorithm. Far too big!</p>
-<p>This implies that the Stencil VDom implementation’s usage of
-heuristics for things like detecting when children match up is
-well-justified. However, we should try to make sure that our heuristics
-always result in good output! The <code>ref</code> issue showcases how
-we do have a shortcoming there.</p>
 <h3 id="diffing-algorithm">Diffing algorithm</h3>
 <p>According to their documentation, React’s <a
 href="https://reactjs.org/docs/reconciliation.html#the-diffing-algorithm">diffing
@@ -306,19 +368,31 @@ tags.</p>
 buried deep in a tree could get hoisted out and re-used…</p>
 <h2 id="snabbdom">Snabbdom</h2>
 <h2 id="millions">Millions</h2>
+<h2 id="preact">Preact</h2>
 <section id="footnotes" class="footnotes footnotes-end-of-document"
 role="doc-endnotes">
 <hr />
 <ol>
-<li id="fn1"><p>They cite the following paper for this: <a
+<li id="fn1"><p>See <a href="https://arxiv.org/pdf/2209.07524.pdf"
+class="uri">https://arxiv.org/pdf/2209.07524.pdf</a> for a recent result
+sharing a new algorithm for doing this - in addition to the result, the
+paper has some helpful background about the nature of the problem.<a
+href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>In <a
+href="https://reactjs.org/docs/reconciliation.html">some of their
+documentation</a> the React devs cite a paper (<a
 href="https://grfia.dlsi.ua.es/ml/algorithms/references/editsurvey_bille.pdf"
-class="uri">https://grfia.dlsi.ua.es/ml/algorithms/references/editsurvey_bille.pdf</a>.
-This discusses the problem of, given two trees <span
-class="math inline">T_1</span> and <span class="math inline">T_2</span>,
-finding the minimal edit script <span class="math inline">S</span> which
-which will produce <span class="math inline">T_2</span> from <span
-class="math inline">T_1</span>. <a href="#fnref1" class="footnote-back"
-role="doc-backlink">↩︎</a></p></li>
+class="uri">https://grfia.dlsi.ua.es/ml/algorithms/references/editsurvey_bille.pdf</a>)
+which discusses this in some detail.<a href="#fnref2"
+class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p>I did not know about this algorithmic constraint when
+first reading the Stencil code, but after looking into it a bit I’ve
+concluded that Stencil’s usage of heuristics for things like detecting
+when children match up is well-justified. However, we should try to make
+sure that our heuristics always result in good output! The <a
+href="https://github.com/ionic-team/stencil/issues/3564"><code>ref</code>
+issue</a> showcases how we do have a shortcoming there.<a href="#fnref3"
+class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
 </section>
 </body>
