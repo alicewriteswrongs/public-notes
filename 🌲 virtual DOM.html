@@ -157,69 +157,6 @@
       margin: 0 0.8em 0.2em -1.6em;
       vertical-align: middle;
     }
-    pre > code.sourceCode { white-space: pre; position: relative; }
-    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
-    pre > code.sourceCode > span:empty { height: 1.2em; }
-    .sourceCode { overflow: visible; }
-    code.sourceCode > span { color: inherit; text-decoration: inherit; }
-    div.sourceCode { margin: 1em 0; }
-    pre.sourceCode { margin: 0; }
-    @media screen {
-    div.sourceCode { overflow: auto; }
-    }
-    @media print {
-    pre > code.sourceCode { white-space: pre-wrap; }
-    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-    }
-    pre.numberSource code
-      { counter-reset: source-line 0; }
-    pre.numberSource code > span
-      { position: relative; left: -4em; counter-increment: source-line; }
-    pre.numberSource code > span > a:first-child::before
-      { content: counter(source-line);
-        position: relative; left: -1em; text-align: right; vertical-align: baseline;
-        border: none; display: inline-block;
-        -webkit-touch-callout: none; -webkit-user-select: none;
-        -khtml-user-select: none; -moz-user-select: none;
-        -ms-user-select: none; user-select: none;
-        padding: 0 4px; width: 4em;
-        color: #aaaaaa;
-      }
-    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
-    div.sourceCode
-      {   }
-    @media screen {
-    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
-    }
-    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
-    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
-    code span.at { color: #7d9029; } /* Attribute */
-    code span.bn { color: #40a070; } /* BaseN */
-    code span.bu { color: #008000; } /* BuiltIn */
-    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
-    code span.ch { color: #4070a0; } /* Char */
-    code span.cn { color: #880000; } /* Constant */
-    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
-    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
-    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
-    code span.dt { color: #902000; } /* DataType */
-    code span.dv { color: #40a070; } /* DecVal */
-    code span.er { color: #ff0000; font-weight: bold; } /* Error */
-    code span.ex { } /* Extension */
-    code span.fl { color: #40a070; } /* Float */
-    code span.fu { color: #06287e; } /* Function */
-    code span.im { color: #008000; font-weight: bold; } /* Import */
-    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
-    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
-    code span.op { color: #666666; } /* Operator */
-    code span.ot { color: #007020; } /* Other */
-    code span.pp { color: #bc7a00; } /* Preprocessor */
-    code span.sc { color: #4070a0; } /* SpecialChar */
-    code span.ss { color: #bb6688; } /* SpecialString */
-    code span.st { color: #4070a0; } /* String */
-    code span.va { color: #19177c; } /* Variable */
-    code span.vs { color: #4070a0; } /* VerbatimString */
-    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
   </style>
   <!--[if lt IE 9]>
     <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
@@ -231,33 +168,39 @@
 </header>
 <nav id="TOC" role="doc-toc">
 <ul>
+<li><a href="#h-createelement" id="toc-h-createelement">h /
+createElement</a></li>
 <li><a href="#reconciliation"
 id="toc-reconciliation">Reconciliation</a></li>
-<li><a href="#react" id="toc-react">React</a></li>
+<li><a href="#re-rendering" id="toc-re-rendering">Re-Rendering</a></li>
 <li><a href="#resources-for-learning"
 id="toc-resources-for-learning">resources for learning</a></li>
-<li><a href="#hundred" id="toc-hundred">hundred</a></li>
 <li><a href="#simple-virtual-dom"
 id="toc-simple-virtual-dom">simple-virtual-dom</a></li>
 <li><a href="#million" id="toc-million">million</a></li>
 </ul>
 </nav>
 <p>A Virtual DOM is a paradigm for building interactive user interfaces
-in the browser. At its most basic level, this involves maintaining</p>
-<p>Basic terminology:</p>
+in the browser. At its most basic level, it involves maintaining a
+representation of the DOM structure built with JS objects. This
+representation is changed and updated in response to side effects of
+various kinds (user initiated, data sources being updated, etc) and the
+DOM is then efficiently updated to reflect those changes.</p>
 <p>Typically virtual DOM implementations have a few main pieces / bits
-which aim to solve the same underlying problems:</p>
-<h3 id="reconciliation">Reconciliation</h3>
+which aim to solve the same underlying problems.</p>
+<h2 id="h-createelement">h / createElement</h2>
+<p><em>Main article: <a href="./👩‍🔬%20JSX.html">👩‍🔬 JSX</a></em></p>
+<p>Any virtual DOM implementation needs a way to generate virtual DOM
+nodes</p>
+<h2 id="reconciliation">Reconciliation</h2>
 <p><em>Main article: <a href="./🕊%20VDom%20Reconciliation.html">🕊 VDom
 Reconciliation</a></em></p>
 <p>The old and new virtual DOM trees are diffed and any updates are
 written to the DOM. There are quite a lot of gotchas here, from how to
 tell when old DOM elements should be preserved to how to minimize
-re-renders to how to</p>
-<h2 id="react">React</h2>
-<p>See also <a href="./🕊%20VDom%20Reconciliation.html">🕊 VDom
-Reconciliation</a>, which has notes about React’s reconciliation
-algorithm.</p>
+re-renders provide developers with access to underlying DOM nodes.</p>
+<h2 id="re-rendering">Re-Rendering</h2>
+<p>When to do it, how often, what triggers it, etc</p>
 <h2 id="resources-for-learning">resources for learning</h2>
 <ul>
 <li><a
@@ -269,110 +212,6 @@ little more complicated (I added state management): <a
 href="https://github.com/alicewriteswrongs/little-vdom"
 class="uri">https://github.com/alicewriteswrongs/little-vdom</a></p>
 <p><a href="./💯%20hundred%20VDom.html">💯 hundred VDom</a></p>
-<h2 id="hundred">hundred</h2>
-<p>Here: <a href="https://github.com/aidenybai/hundred"
-class="uri">https://github.com/aidenybai/hundred</a></p>
-<p>This is basically a simple vdom implementation designed to clarify
-how these things work.</p>
-<p>It consists of <a
-href="https://github.com/aidenybai/hundred/blob/main/src/index.ts">only
-63LOC</a>. Here they are, broken up in a literate style.</p>
-<p>First important basic types for the implementation:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode ts"><code class="sourceCode typescript"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> Props <span class="op">=</span> <span class="bu">Record</span><span class="op">&lt;</span><span class="dt">string</span><span class="op">,</span> <span class="dt">unknown</span><span class="op">&gt;;</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="kw">interface</span> VElement {</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  tag<span class="op">:</span> <span class="dt">string</span><span class="op">;</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  props<span class="op">:</span> Props<span class="op">;</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  children<span class="op">:</span> VNode[]<span class="op">;</span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> VNode <span class="op">=</span> VElement <span class="op">|</span> <span class="dt">string</span><span class="op">;</span></span></code></pre></div>
-<p>So a vdom node (<code>VNode</code>) can be either a
-<code>VElement</code> or just a <code>string</code>.</p>
-<p>Then the first function is the <code>h</code> function, which you can
-think of as the ‘JSX’ function:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode ts"><code class="sourceCode typescript"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">export</span> <span class="kw">const</span> h <span class="op">=</span> (tag<span class="op">:</span> <span class="dt">string</span><span class="op">,</span> props<span class="op">:</span> Props <span class="op">=</span> {}<span class="op">,</span> children<span class="op">:</span> VNode[] <span class="op">=</span> [])<span class="op">:</span> VElement <span class="kw">=&gt;</span> ({</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  tag<span class="op">,</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  props<span class="op">,</span></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  children<span class="op">,</span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>})<span class="op">;</span></span></code></pre></div>
-<p>Basically this just takes a <code>tag</code> (like <code>"div"</code>
-or whatever), some props, and some children and then creates a
-<code>VElement</code> with those things.</p>
-<p>Next up is <code>createElement</code>, which takes a
-<code>VNode</code> (so either a <code>VElement</code> or a
-<code>string</code>) and creates a DOM node (either an
-<code>HTMLElement</code> or a <code>Text</code> node):</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode ts"><code class="sourceCode typescript"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">export</span> <span class="kw">const</span> createElement <span class="op">=</span> (vnode<span class="op">:</span> VNode)<span class="op">:</span> <span class="bu">HTMLElement</span> <span class="op">|</span> <span class="bu">Text</span> <span class="kw">=&gt;</span> {</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="kw">typeof</span> vnode <span class="op">===</span> <span class="st">&#39;string&#39;</span>) <span class="cf">return</span> <span class="bu">document</span><span class="op">.</span><span class="fu">createTextNode</span>(vnode)<span class="op">;</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> el <span class="op">=</span> <span class="bu">document</span><span class="op">.</span><span class="fu">createElement</span>(vnode<span class="op">.</span><span class="at">tag</span>)<span class="op">;</span></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (<span class="kw">const</span> prop <span class="kw">in</span> vnode<span class="op">.</span><span class="at">props</span>) {</span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    el[prop] <span class="op">=</span> vnode<span class="op">.</span><span class="at">props</span>[prop]<span class="op">;</span></span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (<span class="kw">const</span> child <span class="kw">of</span> vnode<span class="op">.</span><span class="at">children</span>) {</span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>    el<span class="op">.</span><span class="fu">appendChild</span>(<span class="fu">createElement</span>(child))<span class="op">;</span></span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> el<span class="op">;</span></span>
-<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>}<span class="op">;</span></span></code></pre></div>
-<p><code>createElement</code> is pretty straightforward overall I
-think.</p>
-<p>The final function <code>patch</code> is the real meat of the whole
-thing. This is where we actually figure out what updates we need to make
-to the DOM. It’s a recursive function which for a given DOM node will
-call itself again for all of its children.</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode ts"><code class="sourceCode typescript"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">export</span> <span class="kw">const</span> patch <span class="op">=</span> (el<span class="op">:</span> <span class="bu">HTMLElement</span> <span class="op">|</span> <span class="bu">Text</span><span class="op">,</span> newVNode<span class="op">?:</span> VNode<span class="op">,</span> oldVNode<span class="op">?:</span> VNode)<span class="op">:</span> <span class="dt">void</span> <span class="kw">=&gt;</span> {</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="co">// if no new VNode, remove the HTMLElement</span></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="op">!</span>newVNode <span class="op">&amp;&amp;</span> newVNode <span class="op">!==</span> <span class="st">&#39;&#39;</span>) <span class="cf">return</span> el<span class="op">.</span><span class="fu">remove</span>()<span class="op">;</span></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="kw">typeof</span> oldVNode <span class="op">===</span> <span class="st">&#39;string&#39;</span> <span class="op">||</span> <span class="kw">typeof</span> newVNode <span class="op">===</span> <span class="st">&#39;string&#39;</span>) {</span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    <span class="co">// if these are both strings but `old !== new` then create an element with the</span></span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    <span class="co">// new and replace the old with that</span></span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    <span class="co">// `el.replaceWith` replaces `el` in place</span></span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (oldVNode <span class="op">!==</span> newVNode) <span class="cf">return</span> el<span class="op">.</span><span class="fu">replaceWith</span>(<span class="fu">createElement</span>(newVNode))<span class="op">;</span></span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>    <span class="co">// not a string</span></span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (oldVNode<span class="op">?.</span><span class="at">tag</span> <span class="op">!==</span> newVNode<span class="op">?.</span><span class="at">tag</span>) {</span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>      <span class="co">// we only need to create a new DOM Element if the tag is different</span></span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>      <span class="co">// otherwise, we can just re-use it</span></span>
-<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>      <span class="cf">return</span> el<span class="op">.</span><span class="fu">replaceWith</span>(<span class="fu">createElement</span>(newVNode))<span class="op">;</span></span>
-<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>    }</span>
-<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>    <span class="co">// splat together old and new props</span></span>
-<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> (<span class="kw">const</span> prop <span class="kw">in</span> { <span class="op">...</span>oldVNode<span class="op">.</span><span class="at">props</span><span class="op">,</span> <span class="op">...</span>newVNode<span class="op">.</span><span class="at">props</span> }) {</span>
-<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span> (newVNode<span class="op">.</span><span class="at">props</span>[prop] <span class="op">===</span> <span class="kw">undefined</span>) {</span>
-<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>        <span class="co">// if a prop is undefined on the new node delete it from the el</span></span>
-<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>        <span class="kw">delete</span> el[prop]<span class="op">;</span></span>
-<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>      } <span class="cf">else</span> <span class="cf">if</span> (</span>
-<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>        oldVNode<span class="op">.</span><span class="at">props</span>[prop] <span class="op">===</span> <span class="kw">undefined</span> <span class="op">||</span></span>
-<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>        oldVNode<span class="op">.</span><span class="at">props</span>[prop] <span class="op">!==</span> newVNode<span class="op">.</span><span class="at">props</span>[prop]</span>
-<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>      ) {</span>
-<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>        <span class="co">// in any case where the newVNode props doesn&#39;t equal the</span></span>
-<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>        <span class="co">// old value we want to set the value onto the el</span></span>
-<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>        el[prop] <span class="op">=</span> newVNode<span class="op">.</span><span class="at">props</span>[prop]<span class="op">;</span></span>
-<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a>      }</span>
-<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a>    }</span>
-<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a>    <span class="co">// why is this being done in reverse? idk, possibly this is some optimization?no</span></span>
-<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> (<span class="kw">let</span> i <span class="op">=</span> (oldVNode<span class="op">.</span><span class="at">children</span><span class="op">?.</span><span class="at">length</span> <span class="op">??</span> <span class="dv">0</span>) <span class="op">-</span> <span class="dv">1</span><span class="op">;</span> i <span class="op">&gt;=</span> <span class="dv">0</span><span class="op">;</span> <span class="op">--</span>i) {</span>
-<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a>      <span class="fu">patch</span>(</span>
-<span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a>        <span class="op">&lt;</span><span class="bu">HTMLElement</span> <span class="op">|</span> <span class="bu">Text</span><span class="op">&gt;</span>el<span class="op">.</span><span class="at">childNodes</span>[i]<span class="op">,</span></span>
-<span id="cb4-36"><a href="#cb4-36" aria-hidden="true" tabindex="-1"></a>        (newVNode<span class="op">.</span><span class="at">children</span> <span class="op">||</span> [])[i]<span class="op">,</span></span>
-<span id="cb4-37"><a href="#cb4-37" aria-hidden="true" tabindex="-1"></a>        oldVNode<span class="op">.</span><span class="at">children</span>[i]<span class="op">,</span></span>
-<span id="cb4-38"><a href="#cb4-38" aria-hidden="true" tabindex="-1"></a>      )<span class="op">;</span></span>
-<span id="cb4-39"><a href="#cb4-39" aria-hidden="true" tabindex="-1"></a>    }</span>
-<span id="cb4-40"><a href="#cb4-40" aria-hidden="true" tabindex="-1"></a>    <span class="co">// we&#39;ve already handled `oldVNode.children.length` nodes of `newVNode.children`</span></span>
-<span id="cb4-41"><a href="#cb4-41" aria-hidden="true" tabindex="-1"></a>    <span class="co">// so we should start at that index</span></span>
-<span id="cb4-42"><a href="#cb4-42" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> (<span class="kw">let</span> i <span class="op">=</span> oldVNode<span class="op">.</span><span class="at">children</span><span class="op">?.</span><span class="at">length</span> <span class="op">??</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> newVNode<span class="op">.</span><span class="at">children</span><span class="op">?.</span><span class="at">length</span> <span class="op">??</span> <span class="dv">0</span><span class="op">;</span> i<span class="op">++</span>) {</span>
-<span id="cb4-43"><a href="#cb4-43" aria-hidden="true" tabindex="-1"></a>      el<span class="op">.</span><span class="fu">appendChild</span>(<span class="fu">createElement</span>(newVNode<span class="op">.</span><span class="at">children</span>[i]))<span class="op">;</span></span>
-<span id="cb4-44"><a href="#cb4-44" aria-hidden="true" tabindex="-1"></a>    }</span>
-<span id="cb4-45"><a href="#cb4-45" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb4-46"><a href="#cb4-46" aria-hidden="true" tabindex="-1"></a>}<span class="op">;</span></span></code></pre></div>
-<p>I think this is a particularly simple and straightforward virtual DOM
-implementation. It’s very few lines of code, and quite a bit less
-complicated than the example one that I built.</p>
 <h2 id="simple-virtual-dom">simple-virtual-dom</h2>
 <p><a href="https://github.com/livoras/simple-virtual-dom"
 class="uri">https://github.com/livoras/simple-virtual-dom</a></p>
