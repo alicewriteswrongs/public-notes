@@ -318,7 +318,8 @@ a doubly-linked-list instead. They use this for storing both the sources
 of a given effect or computed signal and for storing the things which
 depend on a given signal / computed value. The nodes in the linked list
 then end up having a <code>source</code> and <code>target</code>
-property, like so:</p>
+property, like so<a href="#fn1" class="footnote-ref" id="fnref1"
+role="doc-noteref"><sup>1</sup></a>:</p>
 <figure>
 <img src="https://preactjs.com/assets/signals/signal-boosting-04.png"
 alt="Each Node becomes a sort of quad-linked monstrosity that the dependent can use as a part of its dependency list, and vice versa" />
@@ -342,13 +343,23 @@ each dependency-dependent pair and then use that Node indefinitely as
 long as the dependency relationship exists. If the dependency tree stays
 stable, memory consumption also stays effectively stable after the
 initial build phase. All the while dependency lists stay up to date and
-in order of use. With a constant O(1) amount of work per Node. Nice!</p>
+in order of use. With a constant O(1) amount of work per Node. Nice!<a
+href="#fn2" class="footnote-ref" id="fnref2"
+role="doc-noteref"><sup>2</sup></a></p>
 </blockquote>
 <p>It sounds like this maintains a single global linked list of these
 <span class="math inline">dependency \leftrightarrow dependent</span>
 relationships. EDIT: No, instead there is a linked list stored for each
 <em>evaluation context</em> which is basically like running the cb in an
 effect or a computed signal.</p>
+<p>One interesting feature of the computed signals is that in the
+dependency node list there is a <em>version number</em> stored for each
+dependency (a primitive or computed signal). This lets dependents record
+the last version they saw and thereby avoid recomputing if none of their
+inputs / dependencies are different (this is much faster that doing a
+compare-by-value thing on the actual values themselves, and is also more
+GC friendly because Signal values could be objects which we wouldn’t
+want to keep hanging around indefinitely).</p>
 <h3 id="a-tour-of-the-source">A tour of the source</h3>
 <p>The code for the Signals implementation in Preact is located in a <a
 href="https://github.com/preactjs/signals">separate repo</a> from the
@@ -404,5 +415,20 @@ register that dependency.</p>
 figure out how they implemented that, I’d like to backport that into my
 little toy implementation of reactive signals</li>
 </ul>
+<section id="footnotes" class="footnotes footnotes-end-of-document"
+role="doc-endnotes">
+<hr />
+<ol>
+<li id="fn1"><p>image from <a
+href="https://preactjs.com/blog/signal-boosting/"
+class="uri">https://preactjs.com/blog/signal-boosting/</a><a
+href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>Also from <a
+href="https://preactjs.com/blog/signal-boosting/"
+class="uri">https://preactjs.com/blog/signal-boosting/</a>. Do we
+<em>ibid</em> on the web?<a href="#fnref2" class="footnote-back"
+role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
 </body>
 </html>
