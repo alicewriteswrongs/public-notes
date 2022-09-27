@@ -308,9 +308,14 @@ created and</li>
 corresponding tree of DOM nodes. Note that this doesn’t add these nodes
 to the document yet, but just creates and then returns them.</p>
 <p>The final function <code>patch</code> is the real meat of the whole
-VDOM. This is where we actually figure out what updates we need to make
-to the DOM. It’s a recursive function which for a given DOM node will
-call itself again for all of its children.</p>
+virtual DOM. This is where we diff the old and new <code>VNode</code>
+trees, figuring out when we need to make updates to the concrete DOM,
+and so on. This is a recursive function (hooray tree traversal) which
+will produce a new concrete DOM tree which reflects the
+<code>newVNode</code> virtual DOM tree and is rooted in the
+<code>el</code> parameter.</p>
+<p>Note when reading through that this <code>patch</code> function does
+eager-updates, so as it traverses the virtual DOM</p>
 <p><a
 href="https://github.com/aidenybai/hundred/blob/main/src/index.ts#L31-L63">src/index.ts:L31-L63</a></p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode ts"><code class="sourceCode typescript"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">export</span> <span class="kw">const</span> patch <span class="op">=</span> (el<span class="op">:</span> <span class="bu">HTMLElement</span> <span class="op">|</span> <span class="bu">Text</span><span class="op">,</span> newVNode<span class="op">?:</span> VNode<span class="op">,</span> oldVNode<span class="op">?:</span> VNode)<span class="op">:</span> <span class="dt">void</span> <span class="kw">=&gt;</span> {</span>
@@ -344,23 +349,37 @@ href="https://github.com/aidenybai/hundred/blob/main/src/index.ts#L31-L63">src/i
 <span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a>      }</span>
 <span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a>    }</span>
 <span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a>    <span class="co">// why is this being done in reverse? idk, possibly this is some optimization?no</span></span>
-<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> (<span class="kw">let</span> i <span class="op">=</span> (oldVNode<span class="op">.</span><span class="at">children</span><span class="op">?.</span><span class="at">length</span> <span class="op">??</span> <span class="dv">0</span>) <span class="op">-</span> <span class="dv">1</span><span class="op">;</span> i <span class="op">&gt;=</span> <span class="dv">0</span><span class="op">;</span> <span class="op">--</span>i) {</span>
-<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a>      <span class="fu">patch</span>(</span>
-<span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a>        <span class="op">&lt;</span><span class="bu">HTMLElement</span> <span class="op">|</span> <span class="bu">Text</span><span class="op">&gt;</span>el<span class="op">.</span><span class="at">childNodes</span>[i]<span class="op">,</span></span>
-<span id="cb4-36"><a href="#cb4-36" aria-hidden="true" tabindex="-1"></a>        (newVNode<span class="op">.</span><span class="at">children</span> <span class="op">||</span> [])[i]<span class="op">,</span></span>
-<span id="cb4-37"><a href="#cb4-37" aria-hidden="true" tabindex="-1"></a>        oldVNode<span class="op">.</span><span class="at">children</span>[i]<span class="op">,</span></span>
-<span id="cb4-38"><a href="#cb4-38" aria-hidden="true" tabindex="-1"></a>      )<span class="op">;</span></span>
-<span id="cb4-39"><a href="#cb4-39" aria-hidden="true" tabindex="-1"></a>    }</span>
-<span id="cb4-40"><a href="#cb4-40" aria-hidden="true" tabindex="-1"></a>    <span class="co">// we&#39;ve already handled `oldVNode.children.length` nodes of `newVNode.children`</span></span>
-<span id="cb4-41"><a href="#cb4-41" aria-hidden="true" tabindex="-1"></a>    <span class="co">// so we should start at that index</span></span>
-<span id="cb4-42"><a href="#cb4-42" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> (<span class="kw">let</span> i <span class="op">=</span> oldVNode<span class="op">.</span><span class="at">children</span><span class="op">?.</span><span class="at">length</span> <span class="op">??</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> newVNode<span class="op">.</span><span class="at">children</span><span class="op">?.</span><span class="at">length</span> <span class="op">??</span> <span class="dv">0</span><span class="op">;</span> i<span class="op">++</span>) {</span>
-<span id="cb4-43"><a href="#cb4-43" aria-hidden="true" tabindex="-1"></a>      el<span class="op">.</span><span class="fu">appendChild</span>(<span class="fu">createElement</span>(newVNode<span class="op">.</span><span class="at">children</span>[i]))<span class="op">;</span></span>
-<span id="cb4-44"><a href="#cb4-44" aria-hidden="true" tabindex="-1"></a>    }</span>
-<span id="cb4-45"><a href="#cb4-45" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb4-46"><a href="#cb4-46" aria-hidden="true" tabindex="-1"></a>}<span class="op">;</span></span></code></pre></div>
+<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a>    <span class="co">// iterate through the old children in reverse order, attempting to match</span></span>
+<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a>    <span class="co">// them up with corresponding new children.</span></span>
+<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> (<span class="kw">let</span> i <span class="op">=</span> (oldVNode<span class="op">.</span><span class="at">children</span><span class="op">?.</span><span class="at">length</span> <span class="op">??</span> <span class="dv">0</span>) <span class="op">-</span> <span class="dv">1</span><span class="op">;</span> i <span class="op">&gt;=</span> <span class="dv">0</span><span class="op">;</span> <span class="op">--</span>i) {</span>
+<span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a>      <span class="fu">patch</span>(</span>
+<span id="cb4-36"><a href="#cb4-36" aria-hidden="true" tabindex="-1"></a>        <span class="op">&lt;</span><span class="bu">HTMLElement</span> <span class="op">|</span> <span class="bu">Text</span><span class="op">&gt;</span>el<span class="op">.</span><span class="at">childNodes</span>[i]<span class="op">,</span></span>
+<span id="cb4-37"><a href="#cb4-37" aria-hidden="true" tabindex="-1"></a>        (newVNode<span class="op">.</span><span class="at">children</span> <span class="op">||</span> [])[i]<span class="op">,</span></span>
+<span id="cb4-38"><a href="#cb4-38" aria-hidden="true" tabindex="-1"></a>        oldVNode<span class="op">.</span><span class="at">children</span>[i]<span class="op">,</span></span>
+<span id="cb4-39"><a href="#cb4-39" aria-hidden="true" tabindex="-1"></a>      )<span class="op">;</span></span>
+<span id="cb4-40"><a href="#cb4-40" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb4-41"><a href="#cb4-41" aria-hidden="true" tabindex="-1"></a>    <span class="co">// we&#39;ve already handled the first `oldVNode.children.length` nodes of</span></span>
+<span id="cb4-42"><a href="#cb4-42" aria-hidden="true" tabindex="-1"></a>    <span class="co">// `newVNode.children` so we should start at that index in case `newVNode.children`</span></span>
+<span id="cb4-43"><a href="#cb4-43" aria-hidden="true" tabindex="-1"></a>    <span class="co">// is longer than `oldVNode.children`.</span></span>
+<span id="cb4-44"><a href="#cb4-44" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> (<span class="kw">let</span> i <span class="op">=</span> oldVNode<span class="op">.</span><span class="at">children</span><span class="op">?.</span><span class="at">length</span> <span class="op">??</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> newVNode<span class="op">.</span><span class="at">children</span><span class="op">?.</span><span class="at">length</span> <span class="op">??</span> <span class="dv">0</span><span class="op">;</span> i<span class="op">++</span>) {</span>
+<span id="cb4-45"><a href="#cb4-45" aria-hidden="true" tabindex="-1"></a>      el<span class="op">.</span><span class="fu">appendChild</span>(<span class="fu">createElement</span>(newVNode<span class="op">.</span><span class="at">children</span>[i]))<span class="op">;</span></span>
+<span id="cb4-46"><a href="#cb4-46" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb4-47"><a href="#cb4-47" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb4-48"><a href="#cb4-48" aria-hidden="true" tabindex="-1"></a>}<span class="op">;</span></span></code></pre></div>
 <p>I think this is a particularly simple and straightforward virtual DOM
 implementation. It’s very few lines of code, and quite a bit less
-complicated than the example one that I built.</p>
+complicated than other examples, in particular because it has a simple,
+eager-update <code>patch</code> implementation which doesn’t bother with
+any change batching, with a more complicated algorithm for matching up
+children between renders, or anything like that. But it definitely
+conveys the basic ideas of how this all works.</p>
+<p>From <a href="https://github.com/aidenybai/hundred#readme">the
+project’s README</a> they give this example of using this to render a
+div with “Hello World!” in it:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode js"><code class="sourceCode javascript"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { h<span class="op">,</span> createElement<span class="op">,</span> patch } <span class="im">from</span> <span class="st">&#39;hundred&#39;</span><span class="op">;</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> el <span class="op">=</span> <span class="fu">createElement</span>(<span class="fu">h</span>(<span class="st">&#39;div&#39;</span>))<span class="op">;</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="fu">patch</span>(el<span class="op">,</span> <span class="fu">h</span>(<span class="st">&#39;div&#39;</span><span class="op">,</span> <span class="kw">null</span><span class="op">,</span> <span class="st">&#39;Hello World!&#39;</span>)<span class="op">,</span> <span class="fu">h</span>(<span class="st">&#39;div&#39;</span>))<span class="op">;</span></span></code></pre></div>
 </body>
 </html>

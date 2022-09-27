@@ -168,6 +168,8 @@
 </header>
 <nav id="TOC" role="doc-toc">
 <ul>
+<li><a href="#key-terminology" id="toc-key-terminology">Key
+terminology</a></li>
 <li><a href="#h-createelement" id="toc-h-createelement">h /
 createElement</a></li>
 <li><a href="#reconciliation"
@@ -187,7 +189,21 @@ representation is changed and updated in response to side effects of
 various kinds (user initiated, data sources being updated, etc) and the
 DOM is then efficiently updated to reflect those changes.</p>
 <p>Typically virtual DOM implementations have a few main pieces / bits
-which aim to solve the same underlying problems.</p>
+which aim to solve the same underlying problems, below there are brief
+introductions to these big concepts and links to more detailed notes
+about each of them.</p>
+<h2 id="key-terminology">Key terminology</h2>
+<ul>
+<li>virtual DOM:</li>
+<li><code>VNode</code>/virtual DOM Node: A JavaScript object which forms
+a node in a virtual DOM tree. Typically this will hold information about
+what HTML tag it should render as, attributes that should be set on it,
+and</li>
+<li>concrete DOM: a term that I use sometimes throughout these notes to
+less-ambiguously refer to the actual DOM in the browser at a given point
+in time.</li>
+<li></li>
+</ul>
 <h2 id="h-createelement">h / createElement</h2>
 <p><em>Main article: <a href="./👩‍🔬%20JSX.html">👩‍🔬 JSX</a></em></p>
 <p>Any virtual DOM implementation needs a way to generate virtual DOM
