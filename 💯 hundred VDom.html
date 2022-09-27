@@ -315,7 +315,13 @@ will produce a new concrete DOM tree which reflects the
 <code>newVNode</code> virtual DOM tree and is rooted in the
 <code>el</code> parameter.</p>
 <p>Note when reading through that this <code>patch</code> function does
-eager-updates, so as it traverses the virtual DOM</p>
+eager-updates, so as it traverses the virtual DOM it will make updates
+to the concrete DOM synchronously and immediately as it discovers the
+need for them. If a virtual DOM implementation is used only to render
+DOM elements and there are no components with lifecycles and so on then
+this will work just fine, but a more complicated component lifecycle
+does require some sort of batching in order to provide guarantees about
+when various lifecycle events take place.</p>
 <p><a
 href="https://github.com/aidenybai/hundred/blob/main/src/index.ts#L31-L63">src/index.ts:L31-L63</a></p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode ts"><code class="sourceCode typescript"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">export</span> <span class="kw">const</span> patch <span class="op">=</span> (el<span class="op">:</span> <span class="bu">HTMLElement</span> <span class="op">|</span> <span class="bu">Text</span><span class="op">,</span> newVNode<span class="op">?:</span> VNode<span class="op">,</span> oldVNode<span class="op">?:</span> VNode)<span class="op">:</span> <span class="dt">void</span> <span class="kw">=&gt;</span> {</span>
