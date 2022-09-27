@@ -221,6 +221,24 @@
     code span.vs { color: #4070a0; } /* VerbatimString */
     code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
   </style>
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+  </script>
+  <link rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.css" />
   <!--[if lt IE 9]>
     <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
   <![endif]-->
@@ -231,7 +249,12 @@
 </header>
 <nav id="TOC" role="doc-toc">
 <ul>
-<li><a href="#preact" id="toc-preact">Preact</a></li>
+<li><a href="#preact" id="toc-preact">Preact</a>
+<ul>
+<li><a href="#perf-stuff" id="toc-perf-stuff">Perf stuff</a></li>
+<li><a href="#a-tour-of-the-source" id="toc-a-tour-of-the-source">A tour
+of the source</a></li>
+</ul></li>
 <li><a href="#todo" id="toc-todo">TODO</a></li>
 </ul>
 </nav>
@@ -288,11 +311,98 @@ subscribed that they shouldn’t try to update it anymore.</p>
 <p>This is one thing I was thinking about, it does seem like in their
 implementation they have a two-way binding between signals and
 subscribers. Is there realistically any way around that though?</p>
+<h3 id="perf-stuff">Perf stuff</h3>
+<p>For the Preact implementation they ran into performance issues with
+the ‘naive’ implementation of subscribers using Sets, so they went with
+a doubly-linked-list instead. They use this for storing both the sources
+of a given effect or computed signal and for storing the things which
+depend on a given signal / computed value. The nodes in the linked list
+then end up having a <code>source</code> and <code>target</code>
+property, like so:</p>
+<figure>
+<img src="https://preactjs.com/assets/signals/signal-boosting-04.png"
+alt="Each Node becomes a sort of quad-linked monstrosity that the dependent can use as a part of its dependency list, and vice versa" />
+<figcaption aria-hidden="true">Each Node becomes a sort of quad-linked
+monstrosity that the dependent can use as a part of its dependency list,
+and vice versa</figcaption>
+</figure>
+<p>Here’s their description of how this works:</p>
+<blockquote>
+<p>During the run, each time a dependency is read, the bookkeeping
+values can be used to discover whether that dependency has already been
+seen during this or the previous run. If the dependency is from the
+previous run, we can recycle its Node. For previously unseen
+dependencies we create new Nodes. The Nodes are then shuffled around to
+keep them in reverse order of use. At the end of the run we walk through
+the dependency list again, purging Nodes that are still hanging around
+with the “unused” flag set. Then we reverse the list of remaining nodes
+to keep it all neat for later consumption.</p>
+<p>This delicate dance of death allows us to allocate only one Node per
+each dependency-dependent pair and then use that Node indefinitely as
+long as the dependency relationship exists. If the dependency tree stays
+stable, memory consumption also stays effectively stable after the
+initial build phase. All the while dependency lists stay up to date and
+in order of use. With a constant O(1) amount of work per Node. Nice!</p>
+</blockquote>
+<p>It sounds like this maintains a single global linked list of these
+<span class="math inline">dependency \leftrightarrow dependent</span>
+relationships. EDIT: No, instead there is a linked list stored for each
+<em>evaluation context</em> which is basically like running the cb in an
+effect or a computed signal.</p>
+<h3 id="a-tour-of-the-source">A tour of the source</h3>
+<p>The code for the Signals implementation in Preact is located in a <a
+href="https://github.com/preactjs/signals">separate repo</a> from the
+main project. The <a
+href="https://github.com/preactjs/signals/blob/d93065886349e1f7b8bb9b7750fa63fe7b33e956/packages/core/src/index.ts">core
+implementation</a> is not a huge amount of code (578SLOC at the time of
+writing) so we can easily read through to divine some secrets.</p>
+<p>First here is the type declaration for the linked-list node
+object:</p>
+<p><a
+href="https://github.com/preactjs/signals/blob/d93065886349e1f7b8bb9b7750fa63fe7b33e956/packages/core/src/index.ts#L17-L43">packages/core/src/index.ts:L17-L43</a></p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode ts"><code class="sourceCode typescript"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co">// A linked list node used to track dependencies (sources) and dependents (targets).</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="co">// Also used to remember the source&#39;s last version number that the target saw.</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> <span class="bu">Node</span> <span class="op">=</span> {</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    <span class="co">// A node may have the following flags:</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    <span class="co">//  NODE_FREE when it&#39;s unclear whether the source is still a dependency of the target</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    <span class="co">//  NODE_SUBSCRIBED when the target has subscribed to listen change notifications from the source</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    _flags<span class="op">:</span> <span class="dt">number</span><span class="op">;</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    <span class="co">// A source whose value the target depends on.</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>    _source<span class="op">:</span> Signal<span class="op">;</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>    _prevSource<span class="op">?:</span> <span class="bu">Node</span><span class="op">;</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>    _nextSource<span class="op">?:</span> <span class="bu">Node</span><span class="op">;</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>    <span class="co">// A target that depends on the source and should be notified when the source changes.</span></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>    _target<span class="op">:</span> Computed <span class="op">|</span> Effect<span class="op">;</span></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>    _prevTarget<span class="op">?:</span> <span class="bu">Node</span><span class="op">;</span></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>    _nextTarget<span class="op">?:</span> <span class="bu">Node</span><span class="op">;</span></span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>    <span class="co">// The version number of the source that target has last seen. We use version numbers</span></span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>    <span class="co">// instead of storing the source value, because source values can take arbitrary amount</span></span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>    <span class="co">// of memory, and computeds could hang on to them forever because they&#39;re lazily evaluated.</span></span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>    _version<span class="op">:</span> <span class="dt">number</span><span class="op">;</span></span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Used to remember &amp; roll back the source&#39;s previous `._node` value when entering &amp;</span></span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>    <span class="co">// exiting a new evaluation context.</span></span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>    _rollbackNode<span class="op">?:</span> <span class="bu">Node</span><span class="op">;</span></span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>}<span class="op">;</span></span></code></pre></div>
+<p>There is a global called <code>evalContext</code> which holds a
+reference to the current <em>evaluation context</em>:</p>
+<p><a
+href="https://github.com/preactjs/signals/blob/d93065886349e1f7b8bb9b7750fa63fe7b33e956/packages/core/src/index.ts#L106-L107">packages/core/src/index.ts:L106-L107</a></p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode ts"><code class="sourceCode typescript"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Currently evaluated computed or effect.</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> evalContext<span class="op">:</span> Computed <span class="op">|</span> Effect <span class="op">|</span> <span class="dt">undefined</span> <span class="op">=</span> <span class="kw">undefined</span><span class="op">;</span></span></code></pre></div>
+<p>Basically whenever doing something that could result in new
+subscriptions this will be set to the value of the current
+<code>Computed</code> or <code>Effect</code> object so that inside of
+the <code>.value</code> calls on e.g. a Signal we’ll know where to go to
+register that dependency.</p>
 <h2 id="todo">TODO</h2>
-<ul>
-<li>read through the Preact code to figure out how they implemented
-that, I’d like to backport that into my little toy implementation of
-reactive signals</li>
+<ul class="task-list">
+<li><input type="checkbox" disabled="" />read through the Preact code to
+figure out how they implemented that, I’d like to backport that into my
+little toy implementation of reactive signals</li>
 </ul>
 </body>
 </html>
