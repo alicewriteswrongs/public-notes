@@ -239,6 +239,7 @@ the code</a>
 <li><a href="#el-element" id="toc-el-element"><code>el</code> /
 <code>Element</code></a></li>
 <li><a href="#diff" id="toc-diff"><code>diff</code></a></li>
+<li><a href="#patch" id="toc-patch"><code>patch</code></a></li>
 </ul></li>
 </ul>
 </nav>
@@ -457,5 +458,170 @@ in TypeScript like this:</p>
 <span id="cb7-35"><a href="#cb7-35" aria-hidden="true" tabindex="-1"></a>  <span class="op">|</span> ReorderPatch</span>
 <span id="cb7-36"><a href="#cb7-36" aria-hidden="true" tabindex="-1"></a>  <span class="op">|</span> PropsPatch</span>
 <span id="cb7-37"><a href="#cb7-37" aria-hidden="true" tabindex="-1"></a>  <span class="op">|</span> TextPatch</span></code></pre></div>
+<p>The entry point for producing these is this function:</p>
+<p><a
+href="https://github.com/livoras/simple-virtual-dom/blob/4369a02541f20ea028caa0388e370acb37b73d87/lib/diff.js#L5-L10">lib/diff.js:L5-L10</a></p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode js"><code class="sourceCode javascript"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">diff</span> (oldTree<span class="op">,</span> newTree) {</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">var</span> index <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">var</span> patches <span class="op">=</span> {}</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dfsWalk</span>(oldTree<span class="op">,</span> newTree<span class="op">,</span> index<span class="op">,</span> patches)</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> patches</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<p>The <code>dfsWalk</code> function is where most of the work happens.
+You can read through it to get an idea:</p>
+<p><a
+href="https://github.com/livoras/simple-virtual-dom/blob/4369a02541f20ea028caa0388e370acb37b73d87/lib/diff.js#L12-L51">lib/diff.js:L12-L51</a></p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode ts"><code class="sourceCode typescript"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">dfsWalk</span> (oldNode<span class="op">,</span> newNode<span class="op">,</span> index<span class="op">,</span> patches) {</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">var</span> currentPatch <span class="op">=</span> []</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="co">// Node is removed.</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (newNode <span class="op">===</span> <span class="kw">null</span>) {</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Real DOM node will be removed when perform reordering, so has no needs to do anything in here</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>  <span class="co">// TextNode content replacing</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> <span class="cf">if</span> (_<span class="op">.</span><span class="fu">isString</span>(oldNode) <span class="op">&amp;&amp;</span> _<span class="op">.</span><span class="fu">isString</span>(newNode)) {</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (newNode <span class="op">!==</span> oldNode) {</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>      currentPatch<span class="op">.</span><span class="fu">push</span>({ type<span class="op">:</span> patch<span class="op">.</span><span class="at">TEXT</span><span class="op">,</span> content<span class="op">:</span> newNode })</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>  <span class="co">// Nodes are the same, diff old node&#39;s props and children</span></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> <span class="cf">if</span> (</span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>      oldNode<span class="op">.</span><span class="at">tagName</span> <span class="op">===</span> newNode<span class="op">.</span><span class="at">tagName</span> <span class="op">&amp;&amp;</span></span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>      oldNode<span class="op">.</span><span class="at">key</span> <span class="op">===</span> newNode<span class="op">.</span><span class="at">key</span></span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>    ) {</span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Diff props</span></span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>    <span class="kw">var</span> propsPatches <span class="op">=</span> <span class="fu">diffProps</span>(oldNode<span class="op">,</span> newNode)</span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (propsPatches) {</span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>      currentPatch<span class="op">.</span><span class="fu">push</span>({ type<span class="op">:</span> patch<span class="op">.</span><span class="at">PROPS</span><span class="op">,</span> props<span class="op">:</span> propsPatches })</span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Diff children. If the node has a `ignore` property, do not diff children</span></span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (<span class="op">!</span><span class="fu">isIgnoreChildren</span>(newNode)) {</span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a>      <span class="fu">diffChildren</span>(</span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a>        oldNode<span class="op">.</span><span class="at">children</span><span class="op">,</span></span>
+<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a>        newNode<span class="op">.</span><span class="at">children</span><span class="op">,</span></span>
+<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a>        index<span class="op">,</span></span>
+<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a>        patches<span class="op">,</span></span>
+<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a>        currentPatch</span>
+<span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a>      )</span>
+<span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb9-32"><a href="#cb9-32" aria-hidden="true" tabindex="-1"></a>  <span class="co">// Nodes are not the same, replace the old node with new node</span></span>
+<span id="cb9-33"><a href="#cb9-33" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
+<span id="cb9-34"><a href="#cb9-34" aria-hidden="true" tabindex="-1"></a>    currentPatch<span class="op">.</span><span class="fu">push</span>({ type<span class="op">:</span> patch<span class="op">.</span><span class="at">REPLACE</span><span class="op">,</span> node<span class="op">:</span> newNode })</span>
+<span id="cb9-35"><a href="#cb9-35" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb9-36"><a href="#cb9-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-37"><a href="#cb9-37" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (currentPatch<span class="op">.</span><span class="at">length</span>) {</span>
+<span id="cb9-38"><a href="#cb9-38" aria-hidden="true" tabindex="-1"></a>    patches[index] <span class="op">=</span> currentPatch</span>
+<span id="cb9-39"><a href="#cb9-39" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb9-40"><a href="#cb9-40" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<p>One interesting bit to pay attention to here is the
+<code>index</code> argument. Initially when <code>dfsWalk</code> is
+called from <code>diff</code> this is set to <code>0</code>:</p>
+<p><a
+href="https://github.com/livoras/simple-virtual-dom/blob/4369a02541f20ea028caa0388e370acb37b73d87/lib/diff.js#L6">lib/diff.js:L6</a></p>
+<div class="sourceCode" id="cb10"><pre
+class="sourceCode js"><code class="sourceCode javascript"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>  <span class="kw">var</span> index <span class="op">=</span> <span class="dv">0</span></span></code></pre></div>
+<p>In <code>dfsWalk</code> a series of patches are assembled in
+<code>currentPatch</code> and then that array of patches is stuffed into
+the <code>patches</code> record (which basically has type
+<code>Record&lt;number, Patch[]&gt;</code>) under the index passed
+in.</p>
+<p>The <code>index</code> is also passed down to
+<code>diffChildren</code>, the function responsible for diffing the
+children of an element <em>and</em> for recursively calling
+<code>dfsWalk</code> with those children:</p>
+<p><a
+href="https://github.com/livoras/simple-virtual-dom/blob/4369a02541f20ea028caa0388e370acb37b73d87/lib/diff.js#L62-L71">lib/diff.js:L62-L71</a></p>
+<div class="sourceCode" id="cb11"><pre
+class="sourceCode ts"><code class="sourceCode typescript"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>  <span class="kw">var</span> leftNode <span class="op">=</span> <span class="kw">null</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">var</span> currentNodeIndex <span class="op">=</span> index</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  _<span class="op">.</span><span class="fu">each</span>(oldChildren<span class="op">,</span> <span class="kw">function</span> (child<span class="op">,</span> i) {</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">var</span> newChild <span class="op">=</span> newChildren[i]</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    currentNodeIndex <span class="op">=</span> (leftNode <span class="op">&amp;&amp;</span> leftNode<span class="op">.</span><span class="at">count</span>)</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>      <span class="op">?</span> currentNodeIndex <span class="op">+</span> leftNode<span class="op">.</span><span class="at">count</span> <span class="op">+</span> <span class="dv">1</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>      <span class="op">:</span> currentNodeIndex <span class="op">+</span> <span class="dv">1</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">dfsWalk</span>(child<span class="op">,</span> newChild<span class="op">,</span> currentNodeIndex<span class="op">,</span> patches)</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>    leftNode <span class="op">=</span> child</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>  })</span></code></pre></div>
+<p>Basically what’s going on here is that as we do a depth-first
+traversal left-to-right traversal of the tree we end up incrementing
+this <code>index</code> argument for each component we encounter. The
+patches for a given component are then stored in <code>patches</code>
+under the index that corresponds to their order in that left-to-right,
+depth-first traversal. This means that later on when we’re patching we
+know which elements our patches correspond to without having to keep a
+reference around to the elements themselves.</p>
+<h3 id="patch"><code>patch</code></h3>
+<p>Patch is sort of the final piece of the puzzle. Here’s the entry
+function:</p>
+<p><a
+href="https://github.com/livoras/simple-virtual-dom/blob/4369a02541f20ea028caa0388e370acb37b73d87/lib/patch.js#L8-L11">lib/patch.js:L8-L11</a></p>
+<div class="sourceCode" id="cb12"><pre
+class="sourceCode js"><code class="sourceCode javascript"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">patch</span> (node<span class="op">,</span> patches) {</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">var</span> walker <span class="op">=</span> {<span class="dt">index</span><span class="op">:</span> <span class="dv">0</span>}</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dfsWalk</span>(node<span class="op">,</span> walker<span class="op">,</span> patches)</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<p>Note that <code>node</code> here is an <code>HTMLElement</code>,
+returned by <code>Element.render()</code>.</p>
+<p>Here we follow a similar strategy as we did in the <code>diff</code>
+function with incrementing the index, but here instead we store a
+variable in an object which we can mutate as we traverse the tree.</p>
+<p>This calls out to a walker function <code>dfsWalk</code> which
+basically just traverses the tree and calls an <code>applyPatches</code>
+function:</p>
+<p><a
+href="https://github.com/livoras/simple-virtual-dom/blob/4369a02541f20ea028caa0388e370acb37b73d87/lib/patch.js#L13-L28">lib/patch.js:L13-L28</a></p>
+<div class="sourceCode" id="cb13"><pre
+class="sourceCode js"><code class="sourceCode javascript"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">dfsWalk</span> (node<span class="op">,</span> walker<span class="op">,</span> patches) {</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">var</span> currentPatches <span class="op">=</span> patches[walker<span class="op">.</span><span class="at">index</span>]</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="kw">var</span> len <span class="op">=</span> node<span class="op">.</span><span class="at">childNodes</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">?</span> node<span class="op">.</span><span class="at">childNodes</span><span class="op">.</span><span class="at">length</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">:</span> <span class="dv">0</span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (<span class="kw">var</span> i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> len<span class="op">;</span> i<span class="op">++</span>) {</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">var</span> child <span class="op">=</span> node<span class="op">.</span><span class="at">childNodes</span>[i]</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>    walker<span class="op">.</span><span class="at">index</span><span class="op">++</span></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">dfsWalk</span>(child<span class="op">,</span> walker<span class="op">,</span> patches)</span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (currentPatches) {</span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">applyPatches</span>(node<span class="op">,</span> currentPatches)</span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<p>Note that we get <code>currentPatches</code>, i.e. the patches which
+apply to the current <code>node</code>, by grabbing
+<code>patches[walker.index]</code>.</p>
+<p>The <code>applyPatches</code> function then basically switches on the
+patch type and calls out to some functions which do the work:</p>
+<p><a
+href="https://github.com/livoras/simple-virtual-dom/blob/4369a02541f20ea028caa0388e370acb37b73d87/lib/patch.js#L30-L57">lib/patch.js:L30-L57</a></p>
+<div class="sourceCode" id="cb14"><pre
+class="sourceCode js"><code class="sourceCode javascript"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">applyPatches</span> (node<span class="op">,</span> currentPatches) {</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  _<span class="op">.</span><span class="fu">each</span>(currentPatches<span class="op">,</span> <span class="kw">function</span> (currentPatch) {</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">switch</span> (currentPatch<span class="op">.</span><span class="at">type</span>) {</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>      <span class="cf">case</span> <span class="dt">REPLACE</span><span class="op">:</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>        <span class="kw">var</span> newNode <span class="op">=</span> (<span class="kw">typeof</span> currentPatch<span class="op">.</span><span class="at">node</span> <span class="op">===</span> <span class="st">&#39;string&#39;</span>)</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>          <span class="op">?</span> <span class="bu">document</span><span class="op">.</span><span class="fu">createTextNode</span>(currentPatch<span class="op">.</span><span class="at">node</span>)</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>          <span class="op">:</span> currentPatch<span class="op">.</span><span class="at">node</span><span class="op">.</span><span class="fu">render</span>()</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>        node<span class="op">.</span><span class="at">parentNode</span><span class="op">.</span><span class="fu">replaceChild</span>(newNode<span class="op">,</span> node)</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>        <span class="cf">break</span></span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>      <span class="cf">case</span> <span class="dt">REORDER</span><span class="op">:</span></span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>        <span class="fu">reorderChildren</span>(node<span class="op">,</span> currentPatch<span class="op">.</span><span class="at">moves</span>)</span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>        <span class="cf">break</span></span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>      <span class="cf">case</span> <span class="dt">PROPS</span><span class="op">:</span></span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>        <span class="fu">setProps</span>(node<span class="op">,</span> currentPatch<span class="op">.</span><span class="at">props</span>)</span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>        <span class="cf">break</span></span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>      <span class="cf">case</span> <span class="dt">TEXT</span><span class="op">:</span></span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> (node<span class="op">.</span><span class="at">textContent</span>) {</span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a>          node<span class="op">.</span><span class="at">textContent</span> <span class="op">=</span> currentPatch<span class="op">.</span><span class="at">content</span></span>
+<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a>        } <span class="cf">else</span> {</span>
+<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a>          <span class="co">// fuck ie</span></span>
+<span id="cb14-21"><a href="#cb14-21" aria-hidden="true" tabindex="-1"></a>          node<span class="op">.</span><span class="at">nodeValue</span> <span class="op">=</span> currentPatch<span class="op">.</span><span class="at">content</span></span>
+<span id="cb14-22"><a href="#cb14-22" aria-hidden="true" tabindex="-1"></a>        }</span>
+<span id="cb14-23"><a href="#cb14-23" aria-hidden="true" tabindex="-1"></a>        <span class="cf">break</span></span>
+<span id="cb14-24"><a href="#cb14-24" aria-hidden="true" tabindex="-1"></a>      <span class="cf">default</span><span class="op">:</span></span>
+<span id="cb14-25"><a href="#cb14-25" aria-hidden="true" tabindex="-1"></a>        <span class="cf">throw</span> <span class="kw">new</span> <span class="bu">Error</span>(<span class="st">&#39;Unknown patch type &#39;</span> <span class="op">+</span> currentPatch<span class="op">.</span><span class="at">type</span>)</span>
+<span id="cb14-26"><a href="#cb14-26" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb14-27"><a href="#cb14-27" aria-hidden="true" tabindex="-1"></a>  })</span>
+<span id="cb14-28"><a href="#cb14-28" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<p>You can read the file for the rest - that’s basically how the whole
+thing works!</p>
 </body>
 </html>
