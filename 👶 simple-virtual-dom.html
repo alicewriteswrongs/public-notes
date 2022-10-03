@@ -238,6 +238,7 @@ the code</a>
 <ul>
 <li><a href="#el-element" id="toc-el-element"><code>el</code> /
 <code>Element</code></a></li>
+<li><a href="#diff" id="toc-diff"><code>diff</code></a></li>
 </ul></li>
 </ul>
 </nav>
@@ -292,7 +293,7 @@ patches.</p>
 <span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a><span class="co">// now the `root` dom is updated</span></span></code></pre></div>
 <h2 id="a-tour-of-the-code">A tour of the code</h2>
 <p>Let’s start with the <code>el</code> function for creating new
-elements, then look at how that is rendered to the DOM, and then move on
+elements and look at how that is rendered to the DOM, and then move on
 to diffing and patching.</p>
 <h3 id="el-element"><code>el</code> / <code>Element</code></h3>
 <p>The <code>el</code> function which is exported is an alias for the
@@ -379,5 +380,82 @@ href="https://github.com/livoras/simple-virtual-dom/blob/4369a02541f20ea028caa03
 <span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> el</span>
 <span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<p>One more interesting bit here is the call to <code>_.setAttr</code>
+which is a little utility func defined nearby which does a bit more than
+<a
+href="https://developer.mozilla.org/en-US/docs/Web/API/Element/setAttribute"><code>Element.setAttribute</code></a>:</p>
+<p><a
+href="https://github.com/livoras/simple-virtual-dom/blob/4369a02541f20ea028caa0388e370acb37b73d87/lib/util.js#L43-L64">lib/util.js:L43-L64</a></p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode js"><code class="sourceCode javascript"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>_<span class="op">.</span><span class="at">setAttr</span> <span class="op">=</span> <span class="kw">function</span> <span class="fu">setAttr</span> (node<span class="op">,</span> key<span class="op">,</span> value) {</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">switch</span> (key) {</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">case</span> <span class="st">&#39;style&#39;</span><span class="op">:</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>      node<span class="op">.</span><span class="at">style</span><span class="op">.</span><span class="at">cssText</span> <span class="op">=</span> value</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>      <span class="cf">break</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">case</span> <span class="st">&#39;value&#39;</span><span class="op">:</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>      <span class="kw">var</span> tagName <span class="op">=</span> node<span class="op">.</span><span class="at">tagName</span> <span class="op">||</span> <span class="st">&#39;&#39;</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>      tagName <span class="op">=</span> tagName<span class="op">.</span><span class="fu">toLowerCase</span>()</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span> (</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>        tagName <span class="op">===</span> <span class="st">&#39;input&#39;</span> <span class="op">||</span> tagName <span class="op">===</span> <span class="st">&#39;textarea&#39;</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>      ) {</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>        node<span class="op">.</span><span class="at">value</span> <span class="op">=</span> value</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>      } <span class="cf">else</span> {</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>        <span class="co">// if it is not a input or textarea, use `setAttribute` to set</span></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>        node<span class="op">.</span><span class="fu">setAttribute</span>(key<span class="op">,</span> value)</span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>      }</span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>      <span class="cf">break</span></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>    <span class="cf">default</span><span class="op">:</span></span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>      node<span class="op">.</span><span class="fu">setAttribute</span>(key<span class="op">,</span> value)</span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>      <span class="cf">break</span></span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<p>Ok so basically the way this works is you call <code>Element</code>
+with normal <a href="./👩‍🔬%20JSX.html">👩‍🔬 JSX</a> factory function
+arguments and you get back a tree of these <code>Element</code> objects.
+Then on the root one you can call <code>.render</code> to render it to
+DOM nodes, which you can then attach to the document.</p>
+<h3 id="diff"><code>diff</code></h3>
+<p>This function does a tree traversal, comparing the old and new
+virtual DOM trees and, when they differ, produces patch objects which
+will be interpreted by the <code>patch</code> function to bring the
+state of the DOM in-line with the new virtual DOM tree.</p>
+<p>I believe that the types for the patch objects could be represented
+in TypeScript like this:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode ts"><code class="sourceCode typescript"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> REPLACE <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span>  REORDER <span class="op">=</span> <span class="dv">1</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> PROPS <span class="op">=</span> <span class="dv">2</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> TEXT <span class="op">=</span> <span class="dv">3</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> ReplacePatch <span class="op">=</span> {</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>  type<span class="op">:</span> REPLACE<span class="op">,</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>  node<span class="op">:</span> <span class="bu">Element</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> ReorderPatch {</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>  type<span class="op">:</span> REORDER<span class="op">,</span></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>  moves<span class="op">:</span> Move[]</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> Move {</span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>  index<span class="op">:</span> <span class="dt">number</span><span class="op">,</span></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>  <span class="co">// type 0 is removing, type 1 is inserting</span></span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>  type<span class="op">:</span> <span class="dv">0</span> <span class="op">|</span> <span class="dv">1</span><span class="op">,</span></span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>  item<span class="op">?:</span> <span class="bu">Element</span></span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> PropsPatch {</span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a>  type<span class="op">:</span> PROPS<span class="op">,</span></span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>  props<span class="op">:</span> <span class="bu">Record</span><span class="op">&lt;</span><span class="dt">string</span><span class="op">,</span> <span class="dt">any</span><span class="op">&gt;</span></span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> TextPatch {</span>
+<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a>  type<span class="op">:</span> TEXT<span class="op">,</span></span>
+<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a>  content<span class="op">:</span> <span class="dt">string</span></span>
+<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-33"><a href="#cb7-33" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> Patch <span class="op">=</span></span>
+<span id="cb7-34"><a href="#cb7-34" aria-hidden="true" tabindex="-1"></a>  <span class="op">|</span> ReplacePatch</span>
+<span id="cb7-35"><a href="#cb7-35" aria-hidden="true" tabindex="-1"></a>  <span class="op">|</span> ReorderPatch</span>
+<span id="cb7-36"><a href="#cb7-36" aria-hidden="true" tabindex="-1"></a>  <span class="op">|</span> PropsPatch</span>
+<span id="cb7-37"><a href="#cb7-37" aria-hidden="true" tabindex="-1"></a>  <span class="op">|</span> TextPatch</span></code></pre></div>
 </body>
 </html>
