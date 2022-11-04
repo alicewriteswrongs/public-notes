@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>🧪 Project References for Stencil</title>
+  <style>
+    html {
+      line-height: 1.5;
+      font-family: Georgia, serif;
+      font-size: 20px;
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 1em;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, 'Lucida Console', Consolas, monospace;
+      font-size: 85%;
+      margin: 0;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      background-color: #1a1a1a;
+      border: none;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <style>
+  .note {
+    border: 1px dashed lightgray;
+    padding: 0.5em 1em;
+    padding-top: 0.25em;
+    padding-bottom: 0.25em;
+  }
+
+  .note::before {
+      content: "Note:";
+      font-style: italic;
+      font-size: 14px;
+      border-bottom: 1px solid lightgray;
+  }
+
+  .note p {
+    font-size: 16px;
+    margin: 0.5em 0;
+  }
+
+  .note p:first-child {
+    margin-top: 0.25em;
+  }
+  </style>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">🧪 Project References for Stencil</h1>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#what-the-heck-is-this-about---build-project-references"
+id="toc-what-the-heck-is-this-about---build-project-references">What the
+heck is this about? <code>--build</code>? Project references?</a></li>
+<li><a href="#how-is-the-change-accomplished-for-stencil-in-particular"
+id="toc-how-is-the-change-accomplished-for-stencil-in-particular">How is
+the change accomplished for Stencil in particular?</a>
+<ul>
+<li><a href="#move-compiler-options-to-a-shared-tsconfig-base.json"
+id="toc-move-compiler-options-to-a-shared-tsconfig-base.json">Move
+compiler options to a shared <code>tsconfig-base.json</code></a></li>
+<li><a href="#designate-a-few-sub-projects"
+id="toc-designate-a-few-sub-projects">Designate a few
+sub-projects</a></li>
+<li><a
+href="#moving-interfaces-and-types-out-of-centralized-declaration-files"
+id="toc-moving-interfaces-and-types-out-of-centralized-declaration-files">Moving
+interfaces and types out of centralized declaration files</a></li>
+</ul></li>
+<li><a href="#advantages" id="toc-advantages">Advantages</a></li>
+<li><a href="#disadvantages"
+id="toc-disadvantages">Disadvantages</a></li>
+</ul>
+</nav>
+<p><a href="https://github.com/ionic-team/stencil/pull/3747/">This
+change</a> has a lot of advantages for us but does bring some increased
+complexity to our build and development process. Some of the things that
+it encourages us to do (like avoiding circular dependencies between
+modules) are good things to do anyhow, but they also impose a bit of a
+learning curve and adopting them project-wide will require some
+substantial changes to how the code is architected<a href="#fn1"
+class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>.
+Overall I believe that it will be a helpful change for us to adopt.</p>
+<h2 id="what-the-heck-is-this-about---build-project-references">What the
+heck is this about? <code>--build</code>? Project references?</h2>
+<p>It’s helpful to read the <a
+href="https://www.typescriptlang.org/docs/handbook/project-references.html">documentation
+from the TypeScript project</a> about this feature. In short, project
+references allows defining sub-units of a larger codebase which can be
+compiled independently from the rest of the codebase, allowing
+TypeScript to act as both a compiler and a build tool.</p>
+<p>Ok, how’s it work? Well, glad you asked!</p>
+<ul>
+<li>Within a single root project multiple sub-projects are defined, each
+with their own <code>tsconfig.json</code>.
+<ul>
+<li>Dependencies on <em>other</em> sub-projects have to be
+<em>explicitly declared</em> for each project via the
+<code>references</code> field in each project’s
+<code>tsconfig.json</code>.</li>
+<li>Each sub-project can set its own <code>compilerOptions</code> in
+<code>tsconfig.json</code> and thereby set and enforce it’s own
+norms.</li>
+<li>The dependency graph between all the subprojects <em>must</em> be a
+DAG<a href="#fn2" class="footnote-ref" id="fnref2"
+role="doc-noteref"><sup>2</sup></a>. When you pass the
+<code>--build</code> flag <code>tsc</code> will enforce this rule and
+will not build until you get rid of the circular dependencies.</li>
+</ul></li>
+<li>The <code>--build</code> flag causes <code>tsc</code> to act as both
+a compiler and a build system.
+<ul>
+<li>Instead of just building a single project rooted in the directory
+where <code>tsc</code> is called it will construct a dependency graph of
+all projects within the root project.</li>
+<li>It will then (I believe) walk the tree from the root out until it
+starts to find sub-projects which it can compile (i.e. sub-projects
+which do not have any un-built dependencies). These will then be built,
+in turn allowing the projects which depend on them to build, and so on
+until the whole project can be built.</li>
+</ul></li>
+<li><code>tsc --build</code> also stores and re-uses the output for
+sub-projects and will only rebuild them if they have changed.
+<ul>
+<li>Most of the time this greatly speeds up builds, allowing only a
+small amount of code that has been changed to be rebuilt.</li>
+</ul></li>
+<li>Files within a given project can import from files in another
+project just as they would if they were all part of one single project.
+<code>tsc</code> keeps track of which files are included in each
+sub-project.</li>
+</ul>
+<h2 id="how-is-the-change-accomplished-for-stencil-in-particular">How is
+the change accomplished for Stencil in particular?</h2>
+<p>There are a few changes we need to make in order to get this working
+in Stencil.</p>
+<h3 id="move-compiler-options-to-a-shared-tsconfig-base.json">Move
+compiler options to a shared <code>tsconfig-base.json</code></h3>
+<p>Basically all of the compiler options that we want to share across
+projects need to be moved into a shared <code>tsconfig.json</code> file.
+This is called <code>tsconfig-base.json</code>, and looks like this:</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode json"><code class="sourceCode json"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;compilerOptions&quot;</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;alwaysStrict&quot;</span><span class="fu">:</span> <span class="kw">true</span><span class="fu">,</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;allowSyntheticDefaultImports&quot;</span><span class="fu">:</span> <span class="kw">true</span><span class="fu">,</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;allowUnreachableCode&quot;</span><span class="fu">:</span> <span class="kw">false</span><span class="fu">,</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;declaration&quot;</span><span class="fu">:</span> <span class="kw">true</span><span class="fu">,</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;declarationMap&quot;</span><span class="fu">:</span> <span class="kw">true</span><span class="fu">,</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;experimentalDecorators&quot;</span><span class="fu">:</span> <span class="kw">true</span><span class="fu">,</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;forceConsistentCasingInFileNames&quot;</span><span class="fu">:</span> <span class="kw">true</span><span class="fu">,</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;jsx&quot;</span><span class="fu">:</span> <span class="st">&quot;react&quot;</span><span class="fu">,</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;jsxFactory&quot;</span><span class="fu">:</span> <span class="st">&quot;h&quot;</span><span class="fu">,</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;jsxFragmentFactory&quot;</span><span class="fu">:</span> <span class="st">&quot;Fragment&quot;</span><span class="fu">,</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;lib&quot;</span><span class="fu">:</span> <span class="ot">[</span><span class="st">&quot;dom&quot;</span><span class="ot">,</span> <span class="st">&quot;es2019&quot;</span><span class="ot">]</span><span class="fu">,</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;module&quot;</span><span class="fu">:</span> <span class="st">&quot;esnext&quot;</span><span class="fu">,</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;moduleResolution&quot;</span><span class="fu">:</span> <span class="st">&quot;node&quot;</span><span class="fu">,</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;noImplicitAny&quot;</span><span class="fu">:</span> <span class="kw">true</span><span class="fu">,</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;noImplicitOverride&quot;</span><span class="fu">:</span> <span class="kw">true</span><span class="fu">,</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;noImplicitReturns&quot;</span><span class="fu">:</span> <span class="kw">true</span><span class="fu">,</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;noUnusedLocals&quot;</span><span class="fu">:</span> <span class="kw">true</span><span class="fu">,</span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;noUnusedParameters&quot;</span><span class="fu">:</span> <span class="kw">true</span><span class="fu">,</span></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;outDir&quot;</span><span class="fu">:</span> <span class="st">&quot;build&quot;</span><span class="fu">,</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;rootDir&quot;</span><span class="fu">:</span> <span class="st">&quot;src/&quot;</span><span class="fu">,</span></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;strictFunctionTypes&quot;</span><span class="fu">:</span> <span class="kw">true</span><span class="fu">,</span></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;pretty&quot;</span><span class="fu">:</span> <span class="kw">true</span><span class="fu">,</span></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;resolveJsonModule&quot;</span><span class="fu">:</span> <span class="kw">true</span><span class="fu">,</span></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;sourceMap&quot;</span><span class="fu">:</span> <span class="kw">true</span><span class="fu">,</span></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;target&quot;</span><span class="fu">:</span> <span class="st">&quot;es2018&quot;</span><span class="fu">,</span></span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;useUnknownInCatchVariables&quot;</span><span class="fu">:</span> <span class="kw">true</span><span class="fu">,</span></span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;baseUrl&quot;</span><span class="fu">:</span> <span class="st">&quot;.&quot;</span><span class="fu">,</span></span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;paths&quot;</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;@app-data&quot;</span><span class="fu">:</span> <span class="ot">[</span><span class="st">&quot;src/app-data/index.ts&quot;</span><span class="ot">]</span><span class="fu">,</span></span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;@app-globals&quot;</span><span class="fu">:</span> <span class="ot">[</span><span class="st">&quot;src/app-globals/index.ts&quot;</span><span class="ot">]</span><span class="fu">,</span></span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;@compiler-deps&quot;</span><span class="fu">:</span> <span class="ot">[</span><span class="st">&quot;src/compiler/sys/modules/compiler-deps.ts&quot;</span><span class="ot">]</span><span class="fu">,</span></span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;@dev-server-process&quot;</span><span class="fu">:</span> <span class="ot">[</span><span class="st">&quot;src/dev-server/server-process.ts&quot;</span><span class="ot">]</span><span class="fu">,</span></span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;@hydrate-factory&quot;</span><span class="fu">:</span> <span class="ot">[</span><span class="st">&quot;src/hydrate/runner/hydrate-factory.ts&quot;</span><span class="ot">]</span><span class="fu">,</span></span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;@platform&quot;</span><span class="fu">:</span> <span class="ot">[</span><span class="st">&quot;src/client/index.ts&quot;</span><span class="ot">]</span><span class="fu">,</span></span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;@runtime&quot;</span><span class="fu">:</span> <span class="ot">[</span><span class="st">&quot;src/runtime/index.ts&quot;</span><span class="ot">]</span><span class="fu">,</span></span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;@stencil/core/compiler&quot;</span><span class="fu">:</span> <span class="ot">[</span><span class="st">&quot;src/compiler/index.ts&quot;</span><span class="ot">]</span><span class="fu">,</span></span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;@stencil/core/declarations&quot;</span><span class="fu">:</span> <span class="ot">[</span><span class="st">&quot;src/declarations/index.ts&quot;</span><span class="ot">]</span><span class="fu">,</span></span>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;@stencil/core/dev-server&quot;</span><span class="fu">:</span> <span class="ot">[</span><span class="st">&quot;src/dev-server/index.ts&quot;</span><span class="ot">]</span><span class="fu">,</span></span>
+<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;@stencil/core/internal&quot;</span><span class="fu">:</span> <span class="ot">[</span><span class="st">&quot;src/internal/index.ts&quot;</span><span class="ot">]</span><span class="fu">,</span></span>
+<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;@stencil/core/internal/client&quot;</span><span class="fu">:</span> <span class="ot">[</span><span class="st">&quot;src/client/index.ts&quot;</span><span class="ot">]</span><span class="fu">,</span></span>
+<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;@stencil/core/internal/client/patch-browser&quot;</span><span class="fu">:</span> <span class="ot">[</span><span class="st">&quot;src/client/client-patch-browser.ts&quot;</span><span class="ot">]</span><span class="fu">,</span></span>
+<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;@stencil/core/internal/client/patch-es&quot;</span><span class="fu">:</span> <span class="ot">[</span><span class="st">&quot;src/client/client-patch-esm.ts&quot;</span><span class="ot">]</span><span class="fu">,</span></span>
+<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;@stencil/core/internal/testing&quot;</span><span class="fu">:</span> <span class="ot">[</span><span class="st">&quot;src/testing/platform/index.ts&quot;</span><span class="ot">]</span><span class="fu">,</span></span>
+<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;@stencil/core/mock-doc&quot;</span><span class="fu">:</span> <span class="ot">[</span><span class="st">&quot;src/mock-doc/index.ts&quot;</span><span class="ot">]</span><span class="fu">,</span></span>
+<span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;@stencil/core/testing&quot;</span><span class="fu">:</span> <span class="ot">[</span><span class="st">&quot;src/testing/index.ts&quot;</span><span class="ot">]</span><span class="fu">,</span></span>
+<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;@sys-api-node&quot;</span><span class="fu">:</span> <span class="ot">[</span><span class="st">&quot;src/sys/node/index.ts&quot;</span><span class="ot">]</span><span class="fu">,</span></span>
+<span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;@utils&quot;</span><span class="fu">:</span> <span class="ot">[</span><span class="st">&quot;src/utils/index.ts&quot;</span><span class="ot">]</span></span>
+<span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a>    <span class="fu">}</span></span>
+<span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a>  <span class="fu">}</span></span>
+<span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div>
+<p>Then in each project we just use the <code>extends</code> key w/ the
+relative path to <code>tsconfig-base.json</code> in order to get these
+options everywhere, like this minimal example:</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode json"><code class="sourceCode json"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;extends&quot;</span><span class="fu">:</span> <span class="st">&quot;../tsconfig-base.json&quot;</span><span class="fu">,</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;compilerOptions&quot;</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;composite&quot;</span><span class="fu">:</span> <span class="kw">true</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">}</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div>
+<div class="note">
+<p>The <code>composite: true</code> line above is <em>required</em> to
+tell TypeScript that subprojects are supposed to be treated as composite
+projects in a larger project.</p>
+</div>
+<p>The general idea is that across the projects things should be almost
+always compiled the same way.</p>
+<h3 id="designate-a-few-sub-projects">Designate a few sub-projects</h3>
+<p>For the first PR introducing this I carved off a few things that were
+relatively simple to get building as sub-projects. Recall that
+sub-projects need to have no circular dependencies with other parts of
+the codebase — this means that it’s generally easier to get things
+working with a smaller directory which has minimal dependencies on other
+parts of the codebase. The best thing possible is to carve off a ‘leaf’
+node which has no dependencies on other projects at all!</p>
+<h4 id="srccompilerdiagnostic"><code>src/compiler/diagnostic</code></h4>
+<p>This is a small project which just exports the
+<code>Diagnostic</code> interface and nothing else. Since this interface
+does not include anything other than a big pile of strings it can be a
+leaf node! 🎉</p>
+<p>The <code>tsconfig.json</code> file for this project is accordingly
+very minimal:</p>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode json"><code class="sourceCode json"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span> </span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;extends&quot;</span><span class="fu">:</span> <span class="st">&quot;../../../tsconfig-base.json&quot;</span><span class="fu">,</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;compilerOptions&quot;</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;composite&quot;</span><span class="fu">:</span> <span class="kw">true</span><span class="fu">,</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;strict&quot;</span><span class="fu">:</span> <span class="kw">true</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">},</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;include&quot;</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;./index.ts&quot;</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  <span class="ot">]</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div>
+<h4
+id="srccompilersysenvironment"><code>src/compiler/sys/environment</code></h4>
+<p>This project is <em>also</em> a leaf node which contains only the
+file currently located at <code>src/compiler/sys/environment.ts</code>
+on <code>main</code>.</p>
+<h4 id="srccompilersyslogger"><code>src/compiler/sys/logger</code></h4>
+<p>This project contains all the code related to our <code>Logger</code>
+interfaces and helper functions and whatnot. It is not a leaf node
+because it depends on the <code>environment</code> and the
+<code>diagnostic</code> projects mentioned above, so it’s
+<code>tsconfig.json</code> (at
+<code>src/compiler/sys/logger/tsconfig.json</code>) looks like this:</p>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode json"><code class="sourceCode json"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;extends&quot;</span><span class="fu">:</span> <span class="st">&quot;../../../../tsconfig-base.json&quot;</span><span class="fu">,</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;compilerOptions&quot;</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;composite&quot;</span><span class="fu">:</span> <span class="kw">true</span><span class="fu">,</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;strict&quot;</span><span class="fu">:</span> <span class="kw">true</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">},</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;include&quot;</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;./index.ts&quot;</span><span class="ot">,</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;./logger.ts&quot;</span><span class="ot">,</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;./console-logger.ts&quot;</span><span class="ot">,</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;./terminal-logger.ts&quot;</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>  <span class="ot">]</span><span class="fu">,</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;references&quot;</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">{</span> <span class="dt">&quot;path&quot;</span><span class="fu">:</span> <span class="st">&quot;../environment&quot;</span> <span class="fu">}</span><span class="ot">,</span></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">{</span> <span class="dt">&quot;path&quot;</span><span class="fu">:</span> <span class="st">&quot;../../diagnostic&quot;</span> <span class="fu">}</span></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>  <span class="ot">]</span></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div>
+<div class="note">
+<p>Check out the <code>"references"</code> section above. This is where
+the project’s dependencies on <code>../environment</code> and
+<code>../../diagnostic</code> are declared.</p>
+<p>Helpfully, if you don’t include these but you <em>do</em> import from
+a file in another project <code>tsc</code> will yell at you and tell you
+to update <code>references</code> to include a reference to the project
+from which you’re trying to import things.</p>
+</div>
+<h4 id="other-candidate-projects">Other candidate projects</h4>
+<p>In addition to those listed above there are a few parts of the
+codebase which could (potentially!) be carved off right now without too
+much work:</p>
+<ul>
+<li>the interfaces and builder / factory code for
+<code>CompilerSystem</code></li>
+<li>the CLI subdirectory</li>
+<li>the configuration validation code (this would likely need to involve
+moving the configuration interface definition)</li>
+</ul>
+<p>There are more that will be more of a lift.</p>
+<h3
+id="moving-interfaces-and-types-out-of-centralized-declaration-files">Moving
+interfaces and types out of centralized declaration files</h3>
+<p>In order to carve off sections of the codebase which do not have
+circular dependencies galore we need to move away from the centralized
+declaration files. Since everything depends on them (and they in turn
+depend on certain types exported elsewhere) the dependency graph for
+modules in the Stencil codebase is quite cyclical.</p>
+<p>One example of this for the initial PR was moving the
+<code>Logger</code> interface and related types like
+<code>LogLevel</code> out of
+<code>src/declaration/stencil-public-compiler.ts</code> and into the
+<code>src/compiler/sys/logger</code> sub-project. This means that the
+code written in that sub-project no longer needs to have a dependency on
+that huge declaration file, so it can be more easily separated out as a
+self-contained module.</p>
+<p>If we want to really go all the way with this strategy we’ll need to
+do a good deal more of this.</p>
+<h2 id="advantages">Advantages</h2>
+<ul>
+<li>Faster builds during development</li>
+<li>Ability to set compiler options independently for sub-projects
+<ul>
+<li>This will allow us to carve off sections of the project where we can
+turn on <code>strictNullChecks</code>, and since the
+<code>strictNullChecks</code> errors will be reported as part of a
+normal build once we turn the option on for a subproject we’ll be
+basically ‘canonizing’ those errors as fixed<a href="#fn3"
+class="footnote-ref" id="fnref3"
+role="doc-noteref"><sup>3</sup></a>.</li>
+</ul></li>
+<li>The requirement that sub-project dependencies be a DAG enforces
+modularity.
+<ul>
+<li>This means that although we can continue to have circular
+dependencies between modules <em>within</em> a project we are <em>not
+allowed</em> to have circular dependencies between projects.</li>
+</ul></li>
+</ul>
+<h2 id="disadvantages">Disadvantages</h2>
+<ul>
+<li>Greater build complexity
+<ul>
+<li>Instead of building a single project we build several projects. This
+requires some shift in the CLI commands we use (although this isn’t much
+more than adding <code>--build</code> here and there).</li>
+</ul></li>
+<li>The requirement that sub-project dependencies be a DAG requires
+substantial refactoring in several areas.
+<ul>
+<li>We need to pay attention to avoiding circular dependencies, and
+carving off new sections of the codebase to be built as separate
+sub-projects will require moving things around.</li>
+</ul></li>
+</ul>
+<section id="footnotes" class="footnotes footnotes-end-of-document"
+role="doc-endnotes">
+<hr />
+<ol>
+<li id="fn1"><p>In particular we have to get away from the pattern of
+declaring interfaces in giant files that everything depends on.<a
+href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>A <a
+href="https://en.wikipedia.org/wiki/Directed_acyclic_graph">directed
+acyclic graph</a>, i.e. a graph which has no cycles in it at all. This
+must be the case for the same reason that you can’t have a circular
+dependency in Make — how would the build system be able to guarantee it
+would exit and not get trapped in an infinite loop?<a href="#fnref2"
+class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p>Unfortunately right now we don’t have this exactly.
+Although we do try to detect in our CI when new errors are introduced
+it’s a bit of a leaky sieve, and it isn’t running by default as part of
+our normal typechecking / development workflow.<a href="#fnref3"
+class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
+</body>
+</html>

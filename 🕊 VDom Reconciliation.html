@@ -221,6 +221,30 @@
     code span.vs { color: #4070a0; } /* VerbatimString */
     code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
   </style>
+  <style>
+  .note {
+    border: 1px dashed lightgray;
+    padding: 0.5em 1em;
+    padding-top: 0.25em;
+    padding-bottom: 0.25em;
+  }
+
+  .note::before {
+      content: "Note:";
+      font-style: italic;
+      font-size: 14px;
+      border-bottom: 1px solid lightgray;
+  }
+
+  .note p {
+    font-size: 16px;
+    margin: 0.5em 0;
+  }
+
+  .note p:first-child {
+    margin-top: 0.25em;
+  }
+  </style>
   <script defer=""
   src="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.js"></script>
   <script>document.addEventListener("DOMContentLoaded", function () {
@@ -438,8 +462,7 @@ it is quite a bit simpler than React. Instead of having to do a
 <code>createRoot</code>, call some sort of function to render into that
 root, and all that, Preact instead just exposes a single
 <code>render</code> function to the user. This can be called once by the
-user, or you could do a <code>setTimeout</code> type thing, or
-whatever.</p>
+user.</p>
 <ul>
 <li>they store information about the previously rendered tree on the DOM
 <ul>
@@ -456,13 +479,42 @@ href="https://github.com/preactjs/preact/blob/a868b0280a73f28efc49862b75ccd24624
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">let</span> oldVNode <span class="op">=</span> isHydrating</span>
 <span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>        <span class="op">?</span> <span class="kw">null</span></span>
 <span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>        <span class="op">:</span> (replaceNode <span class="op">&amp;&amp;</span> replaceNode<span class="op">.</span><span class="at">_children</span>) <span class="op">||</span> parentDom<span class="op">.</span><span class="at">_children</span><span class="op">;</span></span></code></pre></div>
-<p>it looks like they diff the new vnodes with the old ones and produce
-a queue of edits that need to be made to the DOM, which are then
-committed in one step</p>
+<p>looks like they diff the new vnodes with the old ones and produce a
+queue of edits that need to be made to the DOM, which are then committed
+in one step</p>
+<p><a
+href="https://github.com/preactjs/preact/blob/e968a5a4000dfa9bec7e8d7b26543b23def6d29d/src/render.js#L39-L65">src/render.js:L39-L65</a></p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode ts"><code class="sourceCode typescript"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>    <span class="fu">diff</span>(</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>        parentDom<span class="op">,</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Determine the new vnode tree and store it on the DOM element on</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>        <span class="co">// our custom `_children` property.</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>        vnode<span class="op">,</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>        oldVNode <span class="op">||</span> EMPTY_OBJ<span class="op">,</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>        EMPTY_OBJ<span class="op">,</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>        parentDom<span class="op">.</span><span class="at">ownerSVGElement</span> <span class="op">!==</span> <span class="kw">undefined</span><span class="op">,</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>        <span class="op">!</span>isHydrating <span class="op">&amp;&amp;</span> replaceNode</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>            <span class="op">?</span> [replaceNode]</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>            <span class="op">:</span> oldVNode</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>            <span class="op">?</span> <span class="kw">null</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>            <span class="op">:</span> parentDom<span class="op">.</span><span class="at">firstChild</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>            <span class="op">?</span> slice<span class="op">.</span><span class="fu">call</span>(parentDom<span class="op">.</span><span class="at">childNodes</span>)</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>            <span class="op">:</span> <span class="dt">null</span><span class="op">,</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>        commitQueue<span class="op">,</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>        <span class="op">!</span>isHydrating <span class="op">&amp;&amp;</span> replaceNode</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>            <span class="op">?</span> replaceNode</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>            <span class="op">:</span> oldVNode</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>            <span class="op">?</span> oldVNode<span class="op">.</span><span class="at">_dom</span></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>            <span class="op">:</span> parentDom<span class="op">.</span><span class="at">firstChild</span><span class="op">,</span></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>        isHydrating</span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>    )<span class="op">;</span></span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Flush all queued effects</span></span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>    <span class="fu">commitRoot</span>(commitQueue<span class="op">,</span> vnode)<span class="op">;</span></span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
 <p>Somehow though once you call <code>render</code> once if you have a
 state update or anything like that then Preact seems to auto-update the
 component, I think basically preact is like a reactive virtual DOM
-hybrid of sorts</p>
+hybrid of sorts.</p>
 <ul>
 <li>is this accurate, that the <code>render</code> function basically
 sets up listeners which will re-render in the case that a prop changes,

@@ -221,6 +221,30 @@
     code span.vs { color: #4070a0; } /* VerbatimString */
     code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
   </style>
+  <style>
+  .note {
+    border: 1px dashed lightgray;
+    padding: 0.5em 1em;
+    padding-top: 0.25em;
+    padding-bottom: 0.25em;
+  }
+
+  .note::before {
+      content: "Note:";
+      font-style: italic;
+      font-size: 14px;
+      border-bottom: 1px solid lightgray;
+  }
+
+  .note p {
+    font-size: 16px;
+    margin: 0.5em 0;
+  }
+
+  .note p:first-child {
+    margin-top: 0.25em;
+  }
+  </style>
   <!--[if lt IE 9]>
     <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
   <![endif]-->
