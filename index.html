@@ -7,9 +7,6 @@
   <title>📝 Notes</title>
   <style>
     html {
-      line-height: 1.5;
-      font-family: Georgia, serif;
-      font-size: 20px;
       color: #1a1a1a;
       background-color: #fdfdfd;
     }
@@ -28,13 +25,16 @@
     @media (max-width: 600px) {
       body {
         font-size: 0.9em;
-        padding: 1em;
+        padding: 12px;
       }
       h1 {
         font-size: 1.8em;
       }
     }
     @media print {
+      html {
+        background-color: white;
+      }
       body {
         background-color: transparent;
         color: black;
@@ -84,9 +84,10 @@
       color: #606060;
     }
     code {
-      font-family: Menlo, Monaco, 'Lucida Console', Consolas, monospace;
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
       font-size: 85%;
       margin: 0;
+      hyphens: manual;
     }
     pre {
       margin: 1em 0;
@@ -167,12 +168,11 @@
 <h1 class="title">📝 Notes</h1>
 </header>
 <ul>
+<li><a href="./💅%20Decorators,%20TypeScript,%20and%20Stencil.html">💅
+Decorators, TypeScript, and Stencil</a></li>
 <li><a href="./🧪%20Project%20References%20for%20Stencil.html">🧪
 Project References for Stencil</a></li>
 <li><a href="./📡%20Signals.html">📡 Signals</a></li>
-<li><a href="./🥞%20Stack%20Machine.html">🥞 Stack Machine</a></li>
-<li><a href="./↺%20The%20JavaScript%20Event%20Loop.html">↺ The
-JavaScript Event Loop</a></li>
 <li><a href="./🕊%20VDom%20Reconciliation.html">🕊 VDom
 Reconciliation</a></li>
 <li><a href="./🔧%20VDom%20components.html">🔧 VDom components</a></li>
