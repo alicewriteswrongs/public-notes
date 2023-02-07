@@ -252,6 +252,17 @@
           font-size: 1.8em;
         }
       }
+      @media (min-width: 1400px) {
+        nav {
+          position: fixed;
+          top: 10px;
+          left: 10px;
+          width: calc(50% - calc(18em + 20px));
+          max-width: 18em;
+          max-height: calc(100% - 20px);
+          overflow: scroll;
+        }
+      }
       @media print {
         body {
           background-color: transparent;
@@ -944,11 +955,11 @@ amount of work</li>
 <p>I believe that the best option is to go ‘all in’ on ES Decorators.
 That way we support one single decorator standard, and that standard
 happens to be the most modern and best standardized one <em>and</em> the
-one which will eventually run in browsers. This approach reduces the
-distance between Stencil’s implicitly-defined dialect of TypeScript and
-TypeScript itself, and would allow us to remove a good deal of complex,
-difficult-to-debug code from the codebase. We would restore custom
-decorator support not by implementing complex code transforms to
+one which will eventually run in browsers. This approach also reduces
+the distance between Stencil’s implicitly-defined dialect of TypeScript
+and TypeScript itself, and would allow us to remove a good deal of
+complex, difficult-to-debug code from the codebase. We would restore
+custom decorator support not by implementing complex code transforms to
 jerry-rig it in, but simply by doing things ‘the right way.’</p>
 <p>This approach is not without risks. The runtime code for
 <code>Prop</code>, <code>State</code>, <code>Watch</code>, etc is
@@ -970,15 +981,15 @@ those fields.</p>
 <p>The current implementation of decorators in Stencil is functional but
 showing its age. TypeScript 5.0 offers us an opportunity to reimagine
 how we implement Stencil’s component DSL in a ‘ES-native’ way, getting
-rid of custom, one-off solutions in favor of leveraging standardized
+rid of custom, one-off solutions in favor of leveraging standard
 language features and tools.</p>
 <section id="footnotes" class="footnotes footnotes-end-of-document"
 role="doc-endnotes">
 <hr />
 <ol>
 <li id="fn1"><p>See the <a
-href="https://github.com/ionic-team/stencil/issues/4011">Introduction to
-the standard</a> for more on what this means<a href="#fnref1"
+href="https://github.com/tc39/proposal-decorators/#introduction">Introduction
+to the standard</a> for more on what this means<a href="#fnref1"
 class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn2"><p>I believe that the fact that Stencil’s AoT compilation
 means that component authors are actually writing their components in a
