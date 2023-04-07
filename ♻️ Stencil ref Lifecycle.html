@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>♻️ Stencil ref Lifecycle</title>
+  <style>
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      background-color: #1a1a1a;
+      border: none;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    /* CSS for syntax highlighting */
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <style>
+  html {
+    line-height: 1.5;
+    font-family: Georgia, serif;
+    font-size: 20px;
+    color: #1a1a1a;
+    background-color: #fdfdfd;
+  }
+  body {
+    margin: 0 auto;
+    max-width: 36em;
+    padding-left: 50px;
+    padding-right: 50px;
+    padding-top: 50px;
+    padding-bottom: 50px;
+    hyphens: auto;
+    overflow-wrap: break-word;
+    text-rendering: optimizeLegibility;
+    font-kerning: normal;
+  }
+      @media (max-width: 600px) {
+        body {
+          font-size: 0.9em;
+          padding: 1em;
+        }
+        h1 {
+          font-size: 1.8em;
+        }
+      }
+      @media (min-width: 1400px) {
+        nav {
+          position: fixed;
+          top: 10px;
+          left: 10px;
+          width: calc(50% - calc(18em + 20px));
+          max-width: 18em;
+          max-height: calc(100% - 20px);
+          overflow: scroll;
+        }
+      }
+      @media print {
+        body {
+          background-color: transparent;
+          color: black;
+          font-size: 12pt;
+        }
+        p, h2, h3 {
+          orphans: 3;
+          widows: 3;
+        }
+        h2, h3, h4 {
+          page-break-after: avoid;
+        }
+      }
+      p {
+        margin: 1em 0;
+      }
+      a {
+        color: #1a1a1a;
+      }
+      a:visited {
+        color: #1a1a1a;
+      }
+      img {
+        max-width: 100%;
+      }
+      h1, h2, h3, h4, h5, h6 {
+        margin-top: 1.4em;
+      }
+      h5, h6 {
+        font-size: 1em;
+        font-style: italic;
+      }
+      h6 {
+        font-weight: normal;
+      }
+      ol, ul {
+        padding-left: 1.7em;
+        margin-top: 1em;
+      }
+      li > ol, li > ul {
+        margin-top: 0;
+      }
+      blockquote {
+        margin: 1em 0 1em 1.7em;
+        padding-left: 1em;
+        border-left: 2px solid #e6e6e6;
+        color: #606060;
+      }
+      code {
+        font-family: Menlo, Monaco, 'Lucida Console', Consolas, monospace;
+        font-size: 85%;
+        margin: 0;
+      }
+      pre {
+        margin: 1em 0;
+        overflow: auto;
+      }
+      pre code {
+        padding: 0;
+        overflow: visible;
+        overflow-wrap: normal;
+      }
+      .sourceCode {
+        background-color: transparent;
+        overflow: visible;
+      }
+      hr {
+        background-color: #1a1a1a;
+        border: none;
+        height: 1px;
+        margin: 1em 0;
+      }
+      table {
+        margin: 1em 0;
+        border-collapse: collapse;
+        width: 100%;
+        overflow-x: auto;
+        display: block;
+        font-variant-numeric: lining-nums tabular-nums;
+      }
+      table caption {
+        margin-bottom: 0.75em;
+      }
+      tbody {
+        margin-top: 0.5em;
+        border-top: 1px solid #1a1a1a;
+        border-bottom: 1px solid #1a1a1a;
+      }
+      th {
+        border-top: 1px solid #1a1a1a;
+        padding: 0.25em 0.5em 0.25em 0.5em;
+      }
+      td {
+        padding: 0.125em 0.5em 0.25em 0.5em;
+      }
+      header {
+        margin-bottom: 4em;
+        text-align: center;
+      }
+      #TOC li {
+        list-style: none;
+      }
+      #TOC ul {
+        padding-left: 1.3em;
+      }
+      #TOC > ul {
+        padding-left: 0;
+      }
+      #TOC a:not(:hover) {
+        text-decoration: none;
+      }
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      div.columns{display: flex; gap: min(4vw, 1.5em);}
+      div.column{flex: auto; overflow-x: auto;}
+      div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+      ul.task-list{list-style: none;}
+      ul.task-list li input[type="checkbox"] {
+        width: 0.8em;
+        margin: 0 0.8em 0.2em -1.6em;
+        vertical-align: middle;
+      }
+
+  .note {
+    border: 1px dashed lightgray;
+    padding: 0.5em 1em;
+    padding-top: 0.25em;
+    padding-bottom: 0.25em;
+  }
+
+  .note::before {
+      content: "Note:";
+      font-style: italic;
+      font-size: 14px;
+      border-bottom: 1px solid lightgray;
+  }
+
+  .note p {
+    font-size: 16px;
+    margin: 0.5em 0;
+  }
+
+  .note p:first-child {
+    margin-top: 0.25em;
+  }
+
+  p {
+    text-align: justify;
+  }
+
+  #TOC::before {
+    content: "Contents";
+    font-size: 1.5em;
+    font-weight: bold;
+  }
+  </style>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">♻️ Stencil ref Lifecycle</h1>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#setaccessor"
+id="toc-setaccessor"><code>setAccessor</code></a></li>
+<li><a href="#createelm"
+id="toc-createelm"><code>createElm</code></a></li>
+<li><a href="#patch-and-rendervdom-and-friends"
+id="toc-patch-and-rendervdom-and-friends"><code>patch</code> and
+<code>renderVdom</code> and friends</a></li>
+<li><a href="#update-component.ts"
+id="toc-update-component.ts"><code>update-component.ts</code></a></li>
+<li><a href="#a-complication" id="toc-a-complication">A
+complication</a></li>
+</ul>
+</nav>
+<p>How does a <code>ref</code> attr in a Stencil component get called,
+and in what circumstances will it be updated with a new value?</p>
+<p>This is, it turns out, a bit hard to fully track down!</p>
+<p>Let’s go from the inside-out.</p>
+<h2 id="setaccessor"><code>setAccessor</code></h2>
+<p>A <code>ref</code> callback will be called with a reference to the
+DOM node a Stencil component is attached to here in the
+<code>setAccessor</code> function, which is responsible for setting
+various attributes on a DOM element for a new Vdom node:</p>
+<p><a
+href="https://github.com/ionic-team/stencil/blob/3756d878bd9edd44185e63f88d5a013350333a3b/src/runtime/vdom/set-accessor.ts#L59-L64">src/runtime/vdom/set-accessor.ts:L59-L64</a></p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode ts"><code class="sourceCode typescript"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>    } <span class="cf">else</span> <span class="cf">if</span> (BUILD<span class="op">.</span><span class="at">vdomRef</span> <span class="op">&amp;&amp;</span> memberName <span class="op">===</span> <span class="st">&#39;ref&#39;</span>) {</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>      <span class="co">// minifier will clean this up</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span> (newValue) {</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>        <span class="fu">newValue</span>(elm)<span class="op">;</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>      }</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    } <span class="cf">else</span> <span class="cf">if</span> (</span></code></pre></div>
+<p>that function is, in turn, called in two places within
+<code>updateElement</code>, a function taking old and new Vdom nodes and
+essentially porting the attributes from the old node to the new:</p>
+<p><a
+href="https://github.com/ionic-team/stencil/blob/3756d878bd9edd44185e63f88d5a013350333a3b/src/runtime/vdom/update-element.ts#L24-L36">src/runtime/vdom/update-element.ts:L24-L36</a></p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode ts"><code class="sourceCode typescript"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (BUILD<span class="op">.</span><span class="at">updatable</span>) {</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">// remove attributes no longer present on the vnode by setting them to undefined</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> (memberName <span class="kw">in</span> oldVnodeAttrs) {</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span> (<span class="op">!</span>(memberName <span class="kw">in</span> newVnodeAttrs)) {</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>        <span class="fu">setAccessor</span>(elm<span class="op">,</span> memberName<span class="op">,</span> oldVnodeAttrs[memberName]<span class="op">,</span> <span class="kw">undefined</span><span class="op">,</span> isSvgMode<span class="op">,</span> newVnode<span class="op">.</span><span class="at">$flags$</span>)<span class="op">;</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>      }</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>  <span class="co">// add new &amp; update changed attributes</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (memberName <span class="kw">in</span> newVnodeAttrs) {</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">setAccessor</span>(elm<span class="op">,</span> memberName<span class="op">,</span> oldVnodeAttrs[memberName]<span class="op">,</span> newVnodeAttrs[memberName]<span class="op">,</span> isSvgMode<span class="op">,</span> newVnode<span class="op">.</span><span class="at">$flags$</span>)<span class="op">;</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>  }</span></code></pre></div>
+<p>So of the two <code>setAccessor</code> calls here:</p>
+<ol type="1">
+<li>the first is to clear attributes on the DOM element for the old Vdom
+node and</li>
+<li>the second is to port attributes from the old Vdom node to the new
+one’s DOM node</li>
+</ol>
+<p>What is <code>updateElement</code> doing? It’s basically called any
+time a new and old Vdom node need to be reconciled. Additionally, on the
+first render when there is no old Vdom node it will be called with
+<code>null</code>, so it handles that case too.</p>
+<p>Where is <em>that</em> called? It’s called by two VDom functions,
+<code>createElm</code> and <code>patch</code>.</p>
+<h2 id="createelm"><code>createElm</code></h2>
+<p>The <code>createElm</code> call is pretty straightforward - that
+function is called when we need to create a DOM node corresponding to a
+new Vdom node which didn’t previously have a DOM element associated with
+it (because its…new).</p>
+<p>So the <code>updateElement</code> call in this case passes
+<code>null</code> for the <em>old</em> Vdom node:</p>
+<p><a
+href="https://github.com/ionic-team/stencil/blob/3756d878bd9edd44185e63f88d5a013350333a3b/src/runtime/vdom/vdom-render.ts#L103-L106">src/runtime/vdom/vdom-render.ts:L103-L106</a></p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode ts"><code class="sourceCode typescript"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>    <span class="co">// add css classes, attrs, props, listeners, etc.</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (BUILD<span class="op">.</span><span class="at">vdomAttribute</span>) {</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>      <span class="fu">updateElement</span>(<span class="kw">null</span><span class="op">,</span> newVNode<span class="op">,</span> isSvgMode)<span class="op">;</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    }</span></code></pre></div>
+<p>In <code>updateElement</code> we then have (as seen above) a few
+lines at the bottom of the function:</p>
+<p><a
+href="https://github.com/ionic-team/stencil/blob/3756d878bd9edd44185e63f88d5a013350333a3b/src/runtime/vdom/update-element.ts#L33-L36">src/runtime/vdom/update-element.ts:L33-L36</a></p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode ts"><code class="sourceCode typescript"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>  <span class="co">// add new &amp; update changed attributes</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (memberName <span class="kw">in</span> newVnodeAttrs) {</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">setAccessor</span>(elm<span class="op">,</span> memberName<span class="op">,</span> oldVnodeAttrs[memberName]<span class="op">,</span> newVnodeAttrs[memberName]<span class="op">,</span> isSvgMode<span class="op">,</span> newVnode<span class="op">.</span><span class="at">$flags$</span>)<span class="op">;</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  }</span></code></pre></div>
+<p>If the new Vdom node has a <code>ref</code> attr the
+<code>setAccessor</code> call here with that <code>ref</code> callback
+will end up calling it, since in <code>setAccessor</code> there’s just a
+check before that happens that the new value for the attr is
+defined.</p>
+<p>Great, so that explains how for a new node the <code>ref</code>
+callback will be called! 🎉</p>
+<h2 id="patch-and-rendervdom-and-friends"><code>patch</code> and
+<code>renderVdom</code> and friends</h2>
+<p>The <a
+href="https://github.com/ionic-team/stencil/blob/3756d878bd9edd44185e63f88d5a013350333a3b/src/runtime/vdom/vdom-render.ts#L567-L581"><code>patch</code>
+function</a> is just a bit more involved to unwind. This function, as
+you might suspect, reconciles an old Vdom tree with a <em>new</em> Vdom
+tree, making any edits to the DOM that are necessary to produce the
+right output. It receives old and new Vdom nodes as arguments.</p>
+<p><code>patch</code> is in turn called by <code>renderVdom</code>, then
+entry point for Stencil’s Vdom:</p>
+<p><a
+href="https://github.com/ionic-team/stencil/blob/3756d878bd9edd44185e63f88d5a013350333a3b/src/runtime/vdom/vdom-render.ts#L805-L809">src/runtime/vdom/vdom-render.ts:L805-L809</a></p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode ts"><code class="sourceCode typescript"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">export</span> <span class="kw">const</span> renderVdom <span class="op">=</span> (hostRef<span class="op">:</span> d<span class="op">.</span><span class="at">HostRef</span><span class="op">,</span> renderFnResults<span class="op">:</span> d<span class="op">.</span><span class="at">VNode</span> <span class="op">|</span> d<span class="op">.</span><span class="at">VNode</span>[]) <span class="kw">=&gt;</span> {</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> hostElm <span class="op">=</span> hostRef<span class="op">.</span><span class="at">$hostElement$</span><span class="op">;</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> cmpMeta <span class="op">=</span> hostRef<span class="op">.</span><span class="at">$cmpMeta$</span><span class="op">;</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> oldVNode<span class="op">:</span> d<span class="op">.</span><span class="at">VNode</span> <span class="op">=</span> hostRef<span class="op">.</span><span class="at">$vnode$</span> <span class="op">||</span> <span class="fu">newVNode</span>(<span class="kw">null</span><span class="op">,</span> <span class="kw">null</span>)<span class="op">;</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> rootVnode <span class="op">=</span> <span class="fu">isHost</span>(renderFnResults) <span class="op">?</span> renderFnResults <span class="op">:</span> <span class="fu">h</span>(<span class="kw">null</span><span class="op">,</span> <span class="kw">null</span><span class="op">,</span> renderFnResults <span class="im">as</span> <span class="dt">any</span>)<span class="op">;</span></span></code></pre></div>
+<p>In that function we grab a previous Vdom tree off of the
+<code>hostRef</code> if present, and create a new empty node if not. The
+<code>rootVnode</code> is also passed in as an argument from the calling
+context.</p>
+<p>This is a normal Vdom pattern - you have a factory function,
+<code>h</code>, that takes a runtime representation of DOM attributes
+and so on and returns a tree of DOM nodes, and then a render function
+takes that tree and a DOM node and makes it work.</p>
+<p>This entry point into the Vdom world is then called in the code that
+handles updating components.</p>
+<h2 id="update-component.ts"><code>update-component.ts</code></h2>
+<p>This module handles, well, updating components! Great!</p>
+<p>Basically there are some functions like <code>scheduleUpdate</code>
+and <code>dispatchHooks</code> which do things like emitting lifecycle
+events, calling lifecycle functions, and so on. It also, crucially,
+kicks off the first call to <code>updateComponent</code>:</p>
+<p><a
+href="https://github.com/ionic-team/stencil/blob/3756d878bd9edd44185e63f88d5a013350333a3b/src/runtime/update-component.ts#L67-L67">src/runtime/update-component.ts:L67-L67</a></p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode ts"><code class="sourceCode typescript"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> <span class="fu">then</span>(promise<span class="op">,</span> () <span class="kw">=&gt;</span> <span class="fu">updateComponent</span>(hostRef<span class="op">,</span> instance<span class="op">,</span> isInitialLoad))<span class="op">;</span></span></code></pre></div>
+<p>The <code>updateComponent</code> function then in turn calls
+<code>callRender</code> which then, in turn, conditionally calls
+<code>renderVdom</code>:</p>
+<p><a
+href="https://github.com/ionic-team/stencil/blob/3756d878bd9edd44185e63f88d5a013350333a3b/src/runtime/update-component.ts#L167-L176">src/runtime/update-component.ts:L167-L176</a></p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode ts"><code class="sourceCode typescript"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span> (BUILD<span class="op">.</span><span class="at">vdomRender</span> <span class="op">||</span> BUILD<span class="op">.</span><span class="at">reflect</span>) {</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>        <span class="co">// looks like we&#39;ve got child nodes to render into this host element</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>        <span class="co">// or we need to update the css class/attrs on the host element</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>        <span class="co">// DOM WRITE!</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> (BUILD<span class="op">.</span><span class="at">hydrateServerSide</span>) {</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>          <span class="cf">return</span> <span class="bu">Promise</span><span class="op">.</span><span class="fu">resolve</span>(instance)<span class="op">.</span><span class="fu">then</span>((value) <span class="kw">=&gt;</span> <span class="fu">renderVdom</span>(hostRef<span class="op">,</span> value))<span class="op">;</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>        } <span class="cf">else</span> {</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>          <span class="fu">renderVdom</span>(hostRef<span class="op">,</span> instance)<span class="op">;</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>        }</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>      } <span class="cf">else</span> {</span></code></pre></div>
+<p>The long and short of this is that any time that a component updates
+the <code>updateComponent</code> function should end up being called
+which should result in a DOM re-render <em>and</em> can then normally
+result in the <code>ref</code> callback being called again as well - see
+below for more on that.</p>
+<h2 id="a-complication">A complication</h2>
+<p>So above we reviewed the code paths that can lead to the bits of
+<code>setAccessor</code> which actually call the <code>ref</code>
+callback being called:</p>
+<p><a
+href="https://github.com/ionic-team/stencil/blob/3756d878bd9edd44185e63f88d5a013350333a3b/src/runtime/vdom/set-accessor.ts#L59-L63">src/runtime/vdom/set-accessor.ts:L59-L63</a></p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode ts"><code class="sourceCode typescript"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>    } <span class="cf">else</span> <span class="cf">if</span> (BUILD<span class="op">.</span><span class="at">vdomRef</span> <span class="op">&amp;&amp;</span> memberName <span class="op">===</span> <span class="st">&#39;ref&#39;</span>) {</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>      <span class="co">// minifier will clean this up</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span> (newValue) {</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>        <span class="fu">newValue</span>(elm)<span class="op">;</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>      }</span></code></pre></div>
+<p>Here’s the <code>if</code> conditional:</p>
+<p><a
+href="https://github.com/ionic-team/stencil/blob/3756d878bd9edd44185e63f88d5a013350333a3b/src/runtime/vdom/set-accessor.ts#L24-L24">src/runtime/vdom/set-accessor.ts:L24-L24</a></p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode ts"><code class="sourceCode typescript"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (oldValue <span class="op">!==</span> newValue) {</span></code></pre></div>
+<p>The complication here is that if the value passed to the
+<code>ref</code> attr doesn’t change between re-renders then <em>it will
+only ever be called once</em>.</p>
+<p>This normally won’t be an issue because people use an inlined arrow
+function, like so:</p>
+<pre class="tsx"><code>  &lt;div ref={el =&gt; (this.divEl = el)}&gt;gonna update&lt;/div&gt;</code></pre>
+<p>However, if you have a component like this the <code>ref</code>
+callback will only get called once:</p>
+<pre class="tsx"><code>@Component({
+  tag: &#39;my-component&#39;,
+  styleUrl: &#39;my-component.css&#39;,
+  shadow: true,
+})
+export class MyComponent {
+  render() {
+    return &lt;div ref={stableReference}&gt;
+    Hello, World! I&#39;m not gonna call my ref more than once.
+    &lt;/div&gt;;
+  }
+}
+
+function stableReference(el) {
+  console.log(el);
+}</code></pre>
+<p>This was a little surprising to me!</p>
+</body>
+</html>
